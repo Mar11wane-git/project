@@ -276,6 +276,38 @@ const projectsData = [
         features: ["Gestion employés", "Suivi candidatures", "Calcul salaires", "Gestion congés"],
         demoUrl: "https://hrms-system.example.com",
         githubUrl: "https://github.com/username/hrms-system"
+    },
+    {
+        id: 3,
+        title: "StoreHub",
+        description: "Interface e-commerce moderne développée avec React, HTML et CSS, permettant aux utilisateurs de parcourir les produits, gérer leur panier et simuler des achats en ligne.",
+        technologies: ["React", "HTML", "CSS"],
+        icon: (
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-full flex items-center justify-center shadow-[0_8px_30px_-12px_rgba(20,184,166,0.8)] ring-2 ring-teal-400/30">
+                <div className="relative">
+                    <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        {/* Corps du panier */}
+                        <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z" fill="#ffffff" />
+                        {/* Poignée du panier */}
+                        <path d="M8 6C8 5.45 8.45 5 9 5H15C15.55 5 16 5.45 16 6V7H8V6Z" fill="#ffffff" />
+                        {/* Roues du panier */}
+                        <circle cx="9" cy="20" r="1.5" fill="#ffffff" />
+                        <circle cx="15" cy="20" r="1.5" fill="#ffffff" />
+                        {/* Axe des roues */}
+                        <line x1="7.5" y1="20" x2="16.5" y2="20" stroke="#ffffff" strokeWidth="0.5" />
+                        {/* Produits dans le panier */}
+                        <rect x="10" y="8" width="1.5" height="3" fill="#14b8a6" />
+                        <rect x="12.5" y="8" width="1.5" height="3" fill="#14b8a6" />
+                        <rect x="15" y="9" width="1.5" height="2" fill="#14b8a6" />
+                        {/* Ombre pour profondeur */}
+                        <ellipse cx="12" cy="19.5" rx="8" ry="1" fill="#ffffff" fillOpacity="0.2" />
+                    </svg>
+                </div>
+            </div>
+        ),
+        features: ["Catalogue produits", "Gestion panier", "Interface responsive", "Simulation achats"],
+        demoUrl: "https://storehub-demo.example.com",
+        githubUrl: "https://github.com/username/storehub"
     }
 ];
 

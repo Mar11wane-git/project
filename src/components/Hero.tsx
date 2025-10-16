@@ -106,13 +106,13 @@ const Hero = () => {
         const twinkle = 0.5 + 0.5 * Math.sin(t / 600 + p.seed);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        
+
         // Couleur variable entre cyan et teal
         const colorMix = Math.sin(t / 800 + p.seed * 2) * 0.5 + 0.5;
         const r = Math.floor(34 + colorMix * 186); // De cyan-500 à teal-400
         const g = Math.floor(211 - colorMix * 27); // Interpolation
         const b = Math.floor(238 - colorMix * 72);
-        
+
         ctx.fillStyle = `rgba(${r},${g},${b},${0.4 + twinkle * 0.4})`;
         ctx.fill();
       }
@@ -194,71 +194,96 @@ const Hero = () => {
         style={{ background: 'radial-gradient(circle at 70% 70%, rgba(20,184,166,0.35), rgba(0,0,0,0) 70%)' }}
       />
 
-      {/* Contenu principal */}
+      {/* Contenu principal avec photo sur le côté droit */}
       <div className="container mx-auto px-6 relative z-10">
-        {/* Animation décorative */}
-        <div className="mb-8 relative flex justify-center">
-          <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full opacity-20 animate-spin slow-spin"></div>
-          <div className="absolute -bottom-2 -left-2 w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full opacity-15 animate-pulse"></div>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+          {/* Contenu texte centré */}
+          <div className="lg:col-span-2 text-center">
+            <div className="mb-8 relative flex justify-center">
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full opacity-20 animate-spin slow-spin"></div>
+              <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full opacity-15 animate-pulse"></div>
+            </div>
 
-        {/* Contenu principal */}
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-            <span className="text-white drop-shadow-lg">Salut,</span><br />
-            <span className="text-white drop-shadow-lg">Je suis </span>
-            <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 bg-clip-text text-transparent animate-pulse">
-              Marouane El hamdaoui
-            </span>
-          </h1>
+            {/* Contenu principal */}
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                <span className="text-white drop-shadow-lg">Salut,</span><br />
+                <span className="text-white drop-shadow-lg">Je suis </span>
+                <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 bg-clip-text text-transparent animate-pulse">
+                  Marouane El hamdaoui
+                </span>
+              </h1>
 
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 drop-shadow-md">
-            Développeur Full Stack
-          </h2>
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 drop-shadow-md">
+                Développeur Full Stack
+              </h2>
 
-          <div className="mb-8 max-w-3xl mx-auto">
-            <p className="text-lg md:text-xl text-gray-200 leading-relaxed">
-              <span className="text-teal-400 font-bold mr-2 text-2xl">{'>'}</span>
-              <span className="text-gray-100">{dynamicDescriptions[currentDescription]}</span>
-            </p>
+              <div className="mb-8 max-w-3xl mx-auto">
+                <p className="text-lg md:text-xl text-gray-200 leading-relaxed">
+                  <span className="text-teal-400 font-bold mr-2 text-2xl">{'>'}</span>
+                  <span className="text-gray-100">{dynamicDescriptions[currentDescription]}</span>
+                </p>
+              </div>
+
+              {/* Boutons d'action centrés */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                <button
+                  onClick={scrollToContact}
+                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full text-white font-semibold bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-[0_8px_30px_-12px_rgba(20,184,166,0.7)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.8)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transform hover:scale-105"
+                >
+                  <Mail size={18} className="group-hover:rotate-12 transition-transform duration-300" />
+                  Me Contacter
+                </button>
+                <button
+                  onClick={openCVModal}
+                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-white bg-gray-800/80 backdrop-blur-sm border border-teal-500/30 hover:bg-gray-700/80 hover:border-teal-400/50 shadow-[0_8px_30px_-12px_rgba(17,17,17,0.7)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.4)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-teal-400/40 transform hover:scale-105"
+                >
+                  <Eye size={18} className="group-hover:scale-110 transition-transform duration-300" />
+                  Voir CV
+                </button>
+              </div>
+
+              {/* Liens sociaux centrés */}
+              <div className="flex justify-center space-x-6 mb-16">
+                {[
+                  { icon: Github, href: 'https://github.com/Mar11wane-git', label: 'GitHub' },
+                  { icon: Linkedin, href: 'https://www.linkedin.com/in/Marouane-El-Hamdaoui/', label: 'LinkedIn' },
+                  { icon: Mail, href: 'mailto:marouane.elhamdaoui@gmail.com', label: 'Email' }
+                ].map(({ icon: Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group p-4 bg-gray-800/60 backdrop-blur-sm rounded-full border border-teal-500/20 hover:border-teal-400/40 hover:bg-teal-500/10 transition-all duration-300 transform hover:scale-110 shadow-[0_8px_30px_-12px_rgba(20,184,166,0.3)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.5)]"
+                    aria-label={label}
+                  >
+                    <Icon size={24} className="text-gray-300 group-hover:text-cyan-400 transition-colors duration-300" />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Boutons d'action */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button
-              onClick={scrollToContact}
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full text-white font-semibold bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-[0_8px_30px_-12px_rgba(20,184,166,0.7)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.8)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transform hover:scale-105"
-            >
-              <Mail size={18} className="group-hover:rotate-12 transition-transform duration-300" />
-              Me Contacter
-            </button>
-            <button
-              onClick={openCVModal}
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-white bg-gray-800/80 backdrop-blur-sm border border-teal-500/30 hover:bg-gray-700/80 hover:border-teal-400/50 shadow-[0_8px_30px_-12px_rgba(17,17,17,0.7)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.4)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-teal-400/40 transform hover:scale-105"
-            >
-              <Eye size={18} className="group-hover:scale-110 transition-transform duration-300" />
-              Voir CV
-            </button>
-          </div>
+          {/* Photo centrée avec statut */}
+          <div className="lg:col-span-1 flex flex-col items-center">
+            <div className="relative group mb-4">
+              {/* Anneau autour de la photo */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+              <img
+                src="/pecture pro.png"
+                alt="Photo professionnelle"
+                className="relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full object-cover border-4 border-gray-800/50 shadow-2xl shadow-cyan-400/20 hover:shadow-teal-400/30 transition-all duration-300 transform group-hover:scale-105"
+              />
+              {/* Anneau intérieur */}
+              <div className="absolute inset-0 rounded-full border-2 border-cyan-400/50 animate-pulse"></div>
+            </div>
 
-          {/* Liens sociaux */}
-          <div className="flex justify-center space-x-6 mb-16">
-            {[
-              { icon: Github, href: 'https://github.com/Mar11wane-git', label: 'GitHub' },
-              { icon: Linkedin, href: 'https://www.linkedin.com/in/Marouane-El-Hamdaoui/', label: 'LinkedIn' },
-              { icon: Mail, href: 'mailto:marouane.elhamdaoui@gmail.com', label: 'Email' }
-            ].map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-4 bg-gray-800/60 backdrop-blur-sm rounded-full border border-teal-500/20 hover:border-teal-400/40 hover:bg-teal-500/10 transition-all duration-300 transform hover:scale-110 shadow-[0_8px_30px_-12px_rgba(20,184,166,0.3)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.5)]"
-                aria-label={label}
-              >
-                <Icon size={24} className="text-gray-300 group-hover:text-cyan-400 transition-colors duration-300" />
-              </a>
-            ))}
+            {/* Phrase de disponibilité */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 text-green-400 text-sm font-medium animate-pulse">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              Disponible pour travail
+            </div>
           </div>
         </div>
 
