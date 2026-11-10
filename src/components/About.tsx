@@ -1,104 +1,236 @@
 import React from 'react';
-import { ArrowRight, Briefcase, GraduationCap, MapPin } from 'lucide-react';
-import Reveal from './ui/Reveal';
-import Tilt from './ui/Tilt';
-import { JOBS, PROFILE, PROJECTS } from '../data/portfolio';
-import { scrollToSection } from '../hooks/useSections';
+import { User, Code2, Server, Shield, Database, Award, MapPin, Mail, Phone, GraduationCap, CheckCircle2 } from 'lucide-react';
+import BackgroundFX from './BackgroundFX';
+import ScrollReveal from './ScrollReveal';
+
+const pillars = [
+  {
+    icon: Code2,
+    title: "Développement Web Full Stack",
+    description:
+      "Conception d'applications complètes et réactives associant le Front-End (React.js, Tailwind CSS, TypeScript) et le Back-End (Laravel, PHP, Spring Boot, Node.js, API REST).",
+    badge: "Front & Back-end"
+  },
+  {
+    icon: Shield,
+    title: "Production Monétique & Systèmes Critiques",
+    description:
+      "Expérience chez HPS : supervision des traitements batch N1/N2, monitoring Zabbix 24/7, transferts CFT, protocoles Visa/Mastercard, gestion GAB, PowerCARD et résolution d'incidents.",
+    badge: "HPS Monétique"
+  },
+  {
+    icon: Database,
+    title: "Bases de Données & Architecture",
+    description:
+      "Modélisation, administration et requêtage avancé en SQL, PL/SQL sous MySQL, Oracle et bases NoSQL MongoDB. Contrôle et cohérence des flux de données bancaires critiques.",
+    badge: "SQL & Oracle"
+  },
+  {
+    icon: Server,
+    title: "DevOps, Environnements & Agile",
+    description:
+      "Maîtrise des environnements Linux & Windows Server, scripting PowerShell/SSH/PuTTY, conteneurisation Docker, gestion de versions Git/GitHub et respect des cycles Agiles (Scrum).",
+    badge: "DevOps & Cloud Native"
+  }
+];
 
 const About: React.FC = () => {
-  const stats = [
-    { k: String(PROJECTS.length), v: 'projets réalisés' },
-    { k: String(JOBS.length), v: 'expériences pro' },
-    { k: 'Bac+5', v: 'en cours, Génie Info' },
-  ];
-
   return (
-    <section id="about" className="section-pad">
-      <div className="container-page grid items-center gap-16 lg:grid-cols-2">
-        <div>
-          <Reveal>
-            <p className="mb-4 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
-              <span className="font-bold text-accent">01</span>
-              <span className="h-px w-8 bg-line-strong" />À propos
-            </p>
-          </Reveal>
-          <Reveal delay={60}>
-            <h2 className="text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">À propos de moi</h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-muted">
-              <p>
-                Développeur Full Stack junior maîtrisant <strong className="font-semibold text-ink">Java / Spring Boot</strong>,{' '}
-                <strong className="font-semibold text-ink">PHP / Laravel</strong> et{' '}
-                <strong className="font-semibold text-ink">React / Node.js</strong>, en 2ᵉ année du cycle d'ingénierie en
-                Génie Informatique à l'École High Technologie de Rabat.
-              </p>
-              <p>
-                Deux stages en développement web et une expérience de pilote de production monétique chez HPS (incidents N1/N2,
-                SQL, supervision) m'ont appris la rigueur qu'exige la production. Je recherche un{' '}
-                <strong className="font-semibold text-ink">poste de développeur ou de concepteur développeur</strong> à Casablanca
-                ou Rabat.
-              </p>
+    <section id="about" className="py-24 relative overflow-hidden bg-[#0D100E] border-t border-white/[0.04]">
+      <BackgroundFX density="low" variant="teal" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Slide Counter Indicator */}
+        <ScrollReveal delay={50} direction="down">
+          <div className="flex items-center gap-2 mb-6 text-[11px] font-mono text-slate-500 uppercase tracking-widest">
+            <span className="text-[#dfff5b] font-bold">SLIDE 02</span>
+            <span>/</span>
+            <span>06</span>
+            <span className="w-10 h-[1px] bg-white/10" />
+            <span>PROFIL PROFESSIONNEL & VALEURS</span>
+          </div>
+        </ScrollReveal>
+
+        {/* Section Header */}
+        <ScrollReveal delay={100} direction="up">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#18201a] border border-[#2b392f] text-[#dfff5b] text-xs font-mono mb-3">
+              <User size={13} />
+              <span>À PROPOS DE MOI</span>
             </div>
-          </Reveal>
 
-          <Reveal delay={180}>
-            <dl className="mt-8 grid max-w-md grid-cols-3 border-y border-line">
-              {stats.map((s, i) => (
-                <div key={s.v} className={`py-5 ${i > 0 ? 'border-l border-line pl-4 sm:pl-5' : ''}`}>
-                  <dt className="sr-only">{s.v}</dt>
-                  <dd className="text-3xl font-extrabold tracking-tight text-ink">{s.k}</dd>
-                  <dd className="mt-1 text-xs text-muted sm:text-sm">{s.v}</dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
+            <div className="font-handwriting text-2xl text-[#dfff5b] font-semibold -rotate-1 mb-1">
+              ~ Profil & Valeurs Professionnelles ~
+            </div>
 
-          <Reveal delay={220}>
-            <div className="mt-8 flex flex-wrap items-center gap-5">
-              <button onClick={() => scrollToSection('contact')} className="btn-lime">
-                Me contacter <ArrowRight size={16} />
-              </button>
-              <span className="flex items-center gap-2 text-sm text-muted">
-                <MapPin size={16} className="text-accent" /> Basé à Casablanca
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              Passionné par le code & la{' '}
+              <span className="bg-gradient-to-r from-[#dfff5b] via-[#34d399] to-[#22d3ee] bg-clip-text text-transparent">
+                rigueur opérationnelle
               </span>
+            </h2>
+            <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
+              Alliant la créativité du développement web moderne et la rigueur de la production monétique à haute disponibilité.
+            </p>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#dfff5b] to-[#10b981] mx-auto mt-6 rounded-full" />
+          </div>
+        </ScrollReveal>
+
+        {/* Bio Card + Personal Details: Appear step by step */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 max-w-6xl mx-auto">
+          
+          {/* Main Story Slide Card */}
+          <ScrollReveal delay={200} direction="right" className="lg:col-span-7 h-full">
+            <div className="p-7 sm:p-9 rounded-2xl bg-[#131814]/85 border border-white/[0.08] backdrop-blur-xl shadow-xl flex flex-col justify-between h-full hover:border-[#dfff5b]/30 transition-colors">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-[#dfff5b] font-mono text-xs uppercase tracking-wider">
+                  <GraduationCap size={16} />
+                  <span>Objectif & Parcours</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white tracking-tight">
+                  Marouane El Hamdaoui
+                </h3>
+                
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  Étudiant en <strong className="text-[#dfff5b]">2ᵉ année du cycle d’ingénierie en Génie Informatique</strong> à l'École High Technologie (HT) de Rabat, je suis passionné par le génie logiciel et le Web Full Stack.
+                </p>
+                
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  Titulaire d’un diplôme de <strong className="text-emerald-300">Technicien Spécialisé en Développement Digital (option Web Full Stack)</strong>, j’ai également une expérience professionnelle concrète en tant que <strong className="text-cyan-300">Pilote de Production Monétique chez HPS (Hightech Payment Systems)</strong>.
+                </p>
+                
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  Je souhaite mettre mes compétences techniques, ma rigueur acquise en environnement de production critique et ma capacité d'adaptation rapide au service d'une équipe informatique ambitieuse.
+                </p>
+              </div>
+
+              {/* Quick checklist */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 mt-6 border-t border-white/[0.06] text-xs text-slate-300">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-[#dfff5b] shrink-0" />
+                  <span>Programmation Orientée Objet (POO) & clean code</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-[#dfff5b] shrink-0" />
+                  <span>Gestion d'incidents N1/N2 & monitoring Zabbix</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-[#dfff5b] shrink-0" />
+                  <span>Applications Cloud Native & bases relationnelles</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-[#dfff5b] shrink-0" />
+                  <span>Méthodologies Agiles & respect des jalons</span>
+                </div>
+              </div>
             </div>
-          </Reveal>
+          </ScrollReveal>
+
+          {/* Quick Info Grid */}
+          <ScrollReveal delay={350} direction="left" className="lg:col-span-5 h-full">
+            <div className="space-y-4 h-full flex flex-col justify-between">
+              <div className="p-6 rounded-2xl bg-[#131814]/85 border border-white/[0.08] backdrop-blur-xl shadow-xl space-y-4 hover:border-[#dfff5b]/30 transition-colors">
+                <h4 className="text-xs font-mono uppercase tracking-wider text-[#dfff5b] font-semibold mb-2">
+                  Informations Clés
+                </h4>
+
+                <div className="space-y-3 text-xs sm:text-sm">
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                    <MapPin size={18} className="text-[#dfff5b] shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-slate-400 text-xs">Localisation</div>
+                      <div className="text-white font-medium">Casablanca / Meknès, Maroc</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                    <Mail size={18} className="text-emerald-400 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-slate-400 text-xs">Email direct</div>
+                      <a href="mailto:elhamdawimarwane@gmail.com" className="text-white font-medium hover:text-[#dfff5b] transition-colors">
+                        elhamdawimarwane@gmail.com
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                    <Phone size={18} className="text-cyan-400 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-slate-400 text-xs">Téléphone</div>
+                      <a href="tel:+212777079774" className="text-white font-medium hover:text-[#dfff5b] transition-colors font-mono">
+                        +212 7 77 07 97 74
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                    <Award size={18} className="text-[#dfff5b] shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-slate-400 text-xs">Statut & Poste actuel</div>
+                      <div className="text-white font-medium">Pilote Monétique @ HPS & Élève-Ingénieur</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Availability highlight */}
+              <div className="p-4 rounded-xl bg-[#172019] border border-[#2b392f] flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-medium text-[#eef3ea]">
+                  <span className="w-2 h-2 rounded-full bg-[#dfff5b] animate-ping" />
+                  <span>Disponible pour opportunités stimulantes</span>
+                </div>
+                <span className="font-handwriting text-base text-[#dfff5b]">dispo !</span>
+              </div>
+            </div>
+          </ScrollReveal>
+
         </div>
 
-        {/* photo composition */}
-        <Reveal effect="zoom" delay={120}>
-          <div className="relative mx-auto w-full max-w-[460px] px-4 pb-10 pt-10 sm:px-8">
-            <span className="absolute left-0 top-1/3 h-40 w-40 rounded-full border-2 border-lime opacity-60" aria-hidden />
-            <Tilt max={6} className="rounded-3xl">
-              <div className="overflow-hidden rounded-3xl border border-line bg-card shadow-[var(--shadow)]">
-                <img
-                  src={PROFILE.photo}
-                  alt={`${PROFILE.firstName} ${PROFILE.lastName}`}
-                  className="aspect-[4/5] w-full object-cover object-top"
-                  loading="lazy"
-                />
-              </div>
-            </Tilt>
+        {/* 4 Pillars of Competence: Cascading one by one ("katstfo haja bhaja") */}
+        <div className="max-w-6xl mx-auto">
+          <ScrollReveal delay={150} direction="up">
+            <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-8">
+              Domaines d'Expertise & Savoir-faire
+            </h3>
+          </ScrollReveal>
 
-            <div className="float-slow absolute -right-1 top-2 flex max-w-[230px] items-center gap-3 rounded-2xl border border-line bg-card p-3.5 shadow-lg sm:-right-6">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-lime text-on-lime">
-                <GraduationCap size={19} />
-              </span>
-              <span className="text-sm leading-tight">
-                <span className="block font-bold text-ink">Élève-ingénieur</span>
-                <span className="text-xs text-muted">École HT Rabat · 2025</span>
-              </span>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {pillars.map((pillar, i) => {
+              const Icon = pillar.icon;
+              return (
+                <ScrollReveal
+                  key={i}
+                  delay={150 + i * 150} // 150ms, 300ms, 450ms, 600ms stagger!
+                  direction="up"
+                  className="h-full"
+                >
+                  <div className="group p-6 rounded-2xl bg-[#131814]/75 hover:bg-[#131814]/95 border border-white/[0.07] hover:border-[#dfff5b]/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-[0_0_25px_rgba(223,255,91,0.12)] flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-[#dfff5b] group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                          <Icon size={22} />
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.04] text-slate-400 border border-white/[0.06]">
+                          {pillar.badge}
+                        </span>
+                      </div>
 
-            <div className="float-slow d2 absolute -left-1 bottom-0 flex max-w-[250px] items-center gap-3 rounded-2xl border border-line bg-card p-3.5 shadow-lg sm:-left-6">
-              <span className="soft-accent flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-accent">
-                <Briefcase size={18} />
-              </span>
-              <span className="text-sm font-semibold leading-snug text-ink">Pilote de production monétique chez HPS</span>
-            </div>
+                      <h4 className="text-base font-bold text-white mb-2 group-hover:text-[#dfff5b] transition-colors">
+                        {pillar.title}
+                      </h4>
+
+                      <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                        {pillar.description}
+                      </p>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              );
+            })}
           </div>
-        </Reveal>
+        </div>
+
       </div>
     </section>
   );

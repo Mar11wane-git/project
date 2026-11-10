@@ -1,142 +1,194 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowRight, ArrowUp, Menu, Moon, Sun, X } from 'lucide-react';
-import { SECTIONS } from '../data/portfolio';
-import { scrollToSection } from '../hooks/useSections';
+import React, { useState, useEffect } from 'react';
+import { Menu, X, FileDown, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
-  active: number;
-  scrolled: boolean;
-  theme: 'dark' | 'light';
-  onTheme: (t: 'dark' | 'light') => void;
+  onOpenCV: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ active, scrolled, theme, onTheme }) => {
-  const [open, setOpen] = useState(false);
+const Header: React.FC<HeaderProps> = ({ onOpenCV }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
 
-  const go = (id: string) => {
-    setOpen(false);
-    scrollToSection(id);
+      const sections = ['hero', 'about', 'experience', 'projects', 'skills', 'contact'];
+      const scrollPos = window.scrollY + 180;
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const yOffset = -70;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    setIsMenuOpen(false);
   };
 
-  const ThemeSwitch = (
-    <div className="flex items-center rounded-full border border-line bg-card p-1" role="group" aria-label="Thème">
-      {(['light', 'dark'] as const).map((t) => (
-        <button
-          key={t}
-          onClick={() => onTheme(t)}
-          aria-pressed={theme === t}
-          aria-label={t === 'light' ? 'Thème clair' : 'Thème sombre'}
-          className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors ${
-            theme === t ? 'bg-lime text-on-lime' : 'text-muted hover:text-ink'
-          }`}
-        >
-          {t === 'light' ? <Sun size={14} /> : <Moon size={14} />}
-        </button>
-      ))}
-    </div>
-  );
+  const navItems = [
+    { label: 'Accueil', id: 'hero', slide: '01' },
+    { label: 'À propos', id: 'about', slide: '02' },
+    { label: 'Expériences & Études', id: 'experience', slide: '03' },
+    { label: 'Projets', id: 'projects', slide: '04' },
+    { label: 'Compétences', id: 'skills', slide: '05' },
+    { label: 'Contact', id: 'contact', slide: '06' },
+  ];
 
   return (
-    <>
-      <header
-        className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${
-          scrolled || open ? 'header-solid border-line' : 'border-transparent bg-transparent'
-        }`}
-      >
-        <nav className="container-page flex h-16 items-center justify-between gap-4 sm:h-[4.5rem]" aria-label="Navigation principale">
-          <button onClick={() => go('home')} className="text-[26px] font-extrabold leading-none tracking-tight" aria-label="Accueil">
-            <span className="text-ink">M</span>
-            <span className="text-accent">E</span>
+    <header
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-[#0D100E]/85 backdrop-blur-md border-b border-white/[0.08] shadow-xl shadow-black/50 py-3.5'
+          : 'bg-transparent py-5'
+      }`}
+    >
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          
+          {/* Logo */}
+          <button
+            onClick={() => scrollToSection('hero')}
+            className="flex items-center gap-2.5 text-left group focus:outline-none"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#dfff5b] to-[#10b981] p-[1.5px] transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(223,255,91,0.25)]">
+              <div className="w-full h-full bg-[#0D100E] rounded-[10px] flex items-center justify-center font-mono font-bold text-[#dfff5b] text-sm">
+                ME
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold tracking-tight text-white group-hover:text-[#dfff5b] transition-colors text-sm sm:text-base">
+                MAROUANE EL HAMDAOUI
+              </span>
+              <span className="text-[11px] text-slate-400 font-mono hidden sm:inline-block">
+                Génie Informatique & Full Stack
+              </span>
+            </div>
           </button>
 
-          <ul className="hidden items-center gap-1 lg:flex">
-            {SECTIONS.map((s, i) => (
-              <li key={s.id}>
+          {/* Desktop Nav Pills */}
+          <div className="hidden lg:flex items-center space-x-1 bg-white/[0.03] border border-white/[0.07] rounded-full px-3 py-1.5 backdrop-blur-md">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
                 <button
-                  onClick={() => go(s.id)}
-                  aria-current={active === i ? 'true' : undefined}
-                  className={`relative px-3 py-2 text-sm font-medium transition-colors ${
-                    active === i ? 'text-accent' : 'text-muted hover:text-ink'
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 relative flex items-center gap-1.5 ${
+                    isActive
+                      ? 'text-[#dfff5b] bg-[#dfff5b]/10 shadow-[0_0_12px_rgba(223,255,91,0.2)] font-semibold'
+                      : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
-                  {s.label}
-                  <span
-                    className={`absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-lime transition-transform duration-300 ${
-                      active === i ? 'scale-x-100' : 'scale-x-0'
-                    }`}
-                  />
+                  <span className={`text-[10px] font-mono ${isActive ? 'text-[#dfff5b]' : 'text-slate-500'}`}>
+                    {item.slide}
+                  </span>
+                  <span>{item.label}</span>
                 </button>
-              </li>
-            ))}
-          </ul>
+              );
+            })}
+          </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden sm:block">{ThemeSwitch}</div>
-            <button onClick={() => go('contact')} className="btn-lime hidden !px-4 !py-2.5 sm:inline-flex">
-              Me contacter <ArrowRight size={15} />
+          {/* Right Action buttons */}
+          <div className="hidden sm:flex items-center gap-3">
+            <button
+              onClick={onOpenCV}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-slate-200 bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-[#dfff5b]/40 hover:text-[#dfff5b] transition-all duration-200 active:scale-95"
+            >
+              <FileDown size={14} />
+              <span>Consulter CV</span>
             </button>
             <button
-              onClick={() => setOpen((v) => !v)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-line-strong text-ink lg:hidden"
-              aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
-              aria-expanded={open}
+              onClick={() => scrollToSection('contact')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[#0D100E] bg-[#dfff5b] hover:bg-[#ebff82] shadow-[0_0_20px_-3px_rgba(223,255,91,0.5)] transition-all duration-200 active:scale-95"
             >
-              {open ? <X size={18} /> : <Menu size={18} />}
+              <Sparkles size={13} />
+              <span>Me contacter</span>
             </button>
           </div>
-        </nav>
-        <div id="scroll-progress" className="absolute -bottom-px left-0 h-0.5 w-full origin-left scale-x-0 bg-lime" aria-hidden />
-      </header>
 
-      {/* mobile drawer */}
-      {open && (
-        <div className="fade-in fixed inset-0 z-30 bg-bg pt-16 lg:hidden">
-          <nav className="container-page flex h-full flex-col py-4" aria-label="Menu">
-            <ul className="flex-1 overflow-y-auto">
-              {SECTIONS.map((s, i) => (
-                <li key={s.id} className="border-b border-line">
-                  <button
-                    onClick={() => go(s.id)}
-                    className={`flex w-full items-center gap-4 py-4 text-left text-2xl font-bold ${active === i ? 'text-accent' : 'text-ink'}`}
-                  >
-                    <span className="font-mono text-xs text-muted">{String(i).padStart(2, '0')}</span>
-                    {s.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center justify-between gap-3 pb-6 pt-4">
-              {ThemeSwitch}
-              <button onClick={() => go('contact')} className="btn-lime flex-1">
-                Me contacter <ArrowRight size={15} />
+          {/* Mobile Buttons */}
+          <div className="flex sm:hidden items-center gap-2">
+            <button
+              onClick={onOpenCV}
+              className="p-2 rounded-lg bg-[#dfff5b]/10 border border-[#dfff5b]/30 text-[#dfff5b]"
+              aria-label="CV"
+            >
+              <FileDown size={16} />
+            </button>
+            <button
+              className="p-2 text-slate-300 hover:text-white focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Menu"
+            >
+              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+
+        </div>
+
+        {/* Mobile Dropdown */}
+        <div
+          className={`lg:hidden transition-all duration-300 overflow-hidden ${
+            isMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="p-4 space-y-2 rounded-2xl bg-[#141a15]/95 border border-white/10 backdrop-blur-xl shadow-2xl">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`flex items-center justify-between w-full text-left px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                  activeSection === item.id
+                    ? 'text-[#dfff5b] bg-[#dfff5b]/10'
+                    : 'text-slate-300 hover:bg-white/5'
+                }`}
+              >
+                <span>{item.label}</span>
+                <span className="text-[10px] font-mono text-slate-500">SLIDE {item.slide}</span>
+              </button>
+            ))}
+            <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onOpenCV();
+                }}
+                className="w-full py-2.5 px-4 text-xs font-semibold text-center rounded-xl bg-white/[0.04] border border-white/10 text-white flex items-center justify-center gap-2"
+              >
+                <FileDown size={14} />
+                <span>Consulter mon CV (PDF)</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="w-full py-2.5 px-4 text-xs font-bold text-center rounded-xl bg-[#dfff5b] text-[#0D100E]"
+              >
+                Me contacter
               </button>
             </div>
-          </nav>
+          </div>
         </div>
-      )}
 
-      {/* back to top */}
-      <button
-        onClick={() => go('home')}
-        aria-label="Revenir en haut"
-        className={`fixed bottom-5 right-5 z-30 flex h-11 w-11 items-center justify-center rounded-xl bg-lime text-on-lime shadow-lg transition-all duration-300 hover:-translate-y-0.5 sm:bottom-7 sm:right-7 ${
-          scrolled ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'
-        }`}
-      >
-        <ArrowUp size={18} />
-      </button>
-    </>
+      </nav>
+    </header>
   );
 };
 
