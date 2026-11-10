@@ -6,19 +6,22 @@ interface CVModalProps {
   onClose: () => void;
 }
 
-const CV_PDF_URL = '/CV_Marouane_El_Hamdaoui.pdf';
+// Version query busts browser/CDN caches whenever the CV file is replaced.
+const CV_PDF_URL = '/CV_Marouane_El_Hamdaoui.pdf?v=2026-11';
 
 const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    if (!isOpen) return;
+    document.body.style.overflow = 'hidden';
+    document.body.dataset.modal = 'open';
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
+      delete document.body.dataset.modal;
+      window.removeEventListener('keydown', onKey);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -39,14 +42,14 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="relative bg-[#111612] border border-white/15 rounded-3xl shadow-2xl max-w-5xl w-full h-[94vh] flex flex-col overflow-hidden"
+        className="modal-in relative bg-[#111612] border border-white/15 rounded-3xl shadow-2xl max-w-5xl w-full h-[94vh] h-[94svh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         
         {/* Modal Header */}
         <div className="px-5 sm:px-6 py-3.5 bg-[#0e130f] border-b border-white/10 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-[#dfff5b]/10 border border-[#dfff5b]/30 flex items-center justify-center text-[#dfff5b] shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#d6f25e]/10 border border-[#d6f25e]/30 flex items-center justify-center text-[#d6f25e] shrink-0">
               <FileText size={20} />
             </div>
             <div className="min-w-0">
@@ -54,7 +57,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
                 Curriculum Vitae — Marouane El Hamdaoui
               </h3>
               <p className="text-[11px] font-mono text-slate-400 truncate">
-                Génie Informatique & Développeur Web Full Stack
+                Développeur Full Stack Java • PHP • React
               </p>
             </div>
           </div>
@@ -66,7 +69,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
               href={CV_PDF_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-semibold text-[#dfff5b] bg-[#dfff5b]/10 border border-[#dfff5b]/30 hover:bg-[#dfff5b]/20 transition-all active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-semibold text-[#d6f25e] bg-[#d6f25e]/10 border border-[#d6f25e]/30 hover:bg-[#d6f25e]/20 transition-all active:scale-95"
               title="Ouvrir dans un nouvel onglet"
             >
               <ExternalLink size={14} />
@@ -76,7 +79,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
             {/* Download button */}
             <button
               onClick={handleDownload}
-              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#0D100E] bg-[#dfff5b] hover:bg-[#ebff82] shadow-md shadow-[#dfff5b]/20 transition-all active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#0D100E] bg-[#d6f25e] hover:bg-[#ebff82] shadow-md shadow-[#d6f25e]/20 transition-all active:scale-95"
             >
               <Download size={14} />
               <span>Télécharger</span>
@@ -94,7 +97,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Modal Body: Embedded PDF with Object and Fallback */}
-        <div className="flex-1 w-full bg-[#0a0d0b] relative flex flex-col overflow-hidden">
+        <div className="flex-1 w-full bg-[#0e120f] relative flex flex-col overflow-hidden">
           <object
             data={CV_PDF_URL}
             type="application/pdf"
@@ -108,7 +111,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
             >
               {/* Fallback if browser blocks iframe */}
               <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-[#0D100E] text-white">
-                <div className="w-16 h-16 rounded-2xl bg-[#dfff5b]/10 border border-[#dfff5b]/30 flex items-center justify-center text-[#dfff5b] mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-[#d6f25e]/10 border border-[#d6f25e]/30 flex items-center justify-center text-[#d6f25e] mb-4">
                   <FileText size={32} />
                 </div>
                 <h4 className="text-xl font-bold mb-2">Curriculum Vitae — Marouane El Hamdaoui</h4>
@@ -120,7 +123,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
                     href={CV_PDF_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm bg-[#dfff5b] text-[#0D100E] hover:bg-[#ebff82] transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm bg-[#d6f25e] text-[#0D100E] hover:bg-[#ebff82] transition-colors"
                   >
                     <ExternalLink size={16} />
                     <span>Ouvrir dans un nouvel onglet</span>
@@ -145,7 +148,7 @@ const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
             href={CV_PDF_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#dfff5b] hover:underline inline-flex items-center gap-1 font-medium"
+            className="text-[#d6f25e] hover:underline inline-flex items-center gap-1 font-medium"
           >
             <span>Ouvrir dans un nouvel onglet</span>
             <ExternalLink size={12} />

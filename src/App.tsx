@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -8,34 +8,34 @@ import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CVModal from './components/CVModal';
-import SlideTransition from './components/SlideTransition';
+import { useDeck } from './hooks/useDeck';
 
 function App() {
-  const [isCVModalOpen, setIsCVModalOpen] = useState(false);
-
-  const handleOpenCV = () => setIsCVModalOpen(true);
-  const handleCloseCV = () => setIsCVModalOpen(false);
+  const [isCVOpen, setIsCVOpen] = useState(false);
+  const { active, goTo } = useDeck();
+  const openCV = () => setIsCVOpen(true);
+  const closeCV = useCallback(() => setIsCVOpen(false), []);
 
   return (
-    <div className="min-h-screen bg-[#0D100E] text-slate-100 flex flex-col selection:bg-[#dfff5b]/25 selection:text-[#dfff5b] relative overflow-x-hidden">
-      {/* Navigation Header with Slide Indicator */}
-      <Header onOpenCV={handleOpenCV} />
+    <div className="relative min-h-screen overflow-x-clip">
+      <div className="stage-bg" aria-hidden>
+        <div className="stage-grid" />
+      </div>
 
-      {/* Main Presentation Slides */}
-      <main className="flex-grow">
-        <SlideTransition effect="fade"><Hero onOpenCV={handleOpenCV} /></SlideTransition>
-        <SlideTransition effect="push"><About /></SlideTransition>
-        <SlideTransition effect="wipe"><Experience /></SlideTransition>
-        <SlideTransition effect="cube"><Projects /></SlideTransition>
-        <SlideTransition effect="zoom"><Skills /></SlideTransition>
-        <SlideTransition effect="split"><Contact /></SlideTransition>
+      <Header active={active} goTo={goTo} onOpenCV={openCV} />
+
+      <main className="relative z-10">
+        <Hero onOpenCV={openCV} goTo={goTo} />
+        <About />
+        <Experience />
+        <Projects />
+        <Skills />
+        <Contact />
       </main>
 
-      {/* Footer */}
-      <Footer />
+      <Footer goTo={goTo} />
 
-      {/* Curriculum Vitae Modal */}
-      <CVModal isOpen={isCVModalOpen} onClose={handleCloseCV} />
+      <CVModal isOpen={isCVOpen} onClose={closeCV} />
     </div>
   );
 }

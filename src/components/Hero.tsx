@@ -1,240 +1,175 @@
 import React from 'react';
-import { Mail, Eye, Github, Linkedin, ArrowRight, Sparkles, MapPin, Building2, GraduationCap, CheckCircle2 } from 'lucide-react';
-import BackgroundFX from './BackgroundFX';
-import ScrollReveal from './ScrollReveal';
+import { ArrowRight, Eye, Github, Linkedin, Mail, MapPin } from 'lucide-react';
+import Slide from './deck/Slide';
+import Reveal from './deck/Reveal';
+import Tilt from './deck/Tilt';
+import { PROFILE, PROJECTS } from '../data/portfolio';
 
 interface HeroProps {
   onOpenCV: () => void;
+  goTo: (i: number) => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ onOpenCV }) => {
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const yOffset = -70;
-      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  };
+const ORBIT = ['React', 'Laravel', 'Spring Boot', 'FastAPI', 'SQL', 'Docker', 'Python', 'Zabbix'];
 
+const SplitWord: React.FC<{ text: string }> = ({ text }) => (
+  <span className="inline-block whitespace-nowrap" aria-hidden>
+    {[...text].map((c, i) => (
+      <span key={i} className="char" style={{ ['--i' as string]: i }}>
+        {c === ' ' ? ' ' : c}
+      </span>
+    ))}
+  </span>
+);
+
+const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
   return (
-    <section
-      id="hero"
-      className="relative min-h-[92vh] lg:min-h-screen flex items-center justify-center pt-28 pb-16 lg:py-24 overflow-hidden bg-[#0D100E]"
+    <Slide
+      index={0}
+      frame={false}
+      extra={
+        <button
+          onClick={() => goTo(1)}
+          className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted transition-colors hover:text-ink md:flex"
+        >
+          Défiler · Page ↓
+          <span className="flex h-8 w-5 justify-center rounded-full border border-line pt-1.5">
+            <span className="scroll-cue block h-1.5 w-1 rounded-full bg-lime" />
+          </span>
+        </button>
+      }
     >
-      <BackgroundFX density="low" variant="teal" />
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Slide Counter Indicator */}
-        <div className="flex items-center gap-2 mb-6 text-[11px] font-mono text-slate-500 uppercase tracking-widest">
-          <span className="text-[#dfff5b] font-bold">SLIDE 01</span>
-          <span>/</span>
-          <span>06</span>
-          <span className="w-10 h-[1px] bg-white/10" />
-          <span>PRÉSENTATION EXÉCUTIVE</span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
-          {/* Left Column: Presentation Elements - Staggered Cascade */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            
-            {/* 1. Status Pill */}
-            <ScrollReveal delay={100} direction="down">
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#161d18] border border-[#27322a] shadow-[0_0_20px_rgba(223,255,91,0.08)]">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#dfff5b] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#dfff5b]"></span>
-                </span>
-                <span className="text-xs font-mono font-medium text-[#eef3ea]/90">
-                  Pilote de Production Monétique @ HPS • Élève-Ingénieur
-                </span>
-              </div>
-            </ScrollReveal>
-
-            {/* 2. Main Title */}
-            <ScrollReveal delay={200} direction="up">
-              <div className="relative">
-                <div className="font-handwriting text-2xl sm:text-3xl text-[#dfff5b] font-semibold -rotate-2 transform mb-1 flex items-center gap-2">
-                  <span>Bonjour, je suis</span>
-                  <span className="text-xs font-mono text-[#eef3ea]/50 tracking-normal font-normal">
-                    — Casablanca, Maroc
-                  </span>
-                </div>
-
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
-                  MAROUANE <br />
-                  <span className="bg-gradient-to-r from-[#dfff5b] via-[#34d399] to-[#22d3ee] bg-clip-text text-transparent">
-                    EL HAMDAOUI
-                  </span>
-                </h1>
-              </div>
-            </ScrollReveal>
-
-            {/* 3. Subtitle & Bio pitch */}
-            <ScrollReveal delay={300} direction="up">
-              <div className="space-y-3">
-                <h2 className="text-lg sm:text-xl font-bold text-slate-200">
-                  Étudiant en cycle d’ingénierie en Génie Informatique{' '}
-                  <span className="text-[#dfff5b]">&bull;</span> Développeur Web Full Stack
-                </h2>
-
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
-                  Passionné par l'architecture logicielle et le développement web moderne (React.js, Laravel, Spring Boot, Node.js). Fort d'une expérience concrète en{' '}
-                  <strong className="text-[#dfff5b] font-semibold">production monétique critique chez HPS</strong> (supervision Zabbix, transferts CFT, protocoles Visa/Mastercard & requêtes SQL).
-                </p>
-              </div>
-            </ScrollReveal>
-
-            {/* 4. Credentials badges row */}
-            <ScrollReveal delay={400} direction="up">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300 font-mono">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.07]">
-                  <Building2 size={13} className="text-[#dfff5b]" />
-                  <span>HPS — Hightech Payment Systems</span>
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.07]">
-                  <GraduationCap size={13} className="text-[#22d3ee]" />
-                  <span>École High Tech Rabat (Bac+5)</span>
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.07]">
-                  <MapPin size={13} className="text-[#34d399]" />
-                  <span>Casablanca & Meknès</span>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* 5. CTAs Buttons */}
-            <ScrollReveal delay={500} direction="up">
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <button
-                  onClick={() => scrollTo('contact')}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-[#0D100E] bg-[#dfff5b] hover:bg-[#ebff82] shadow-[0_0_25px_rgba(223,255,91,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
-                >
-                  <Mail size={16} />
-                  <span>Me Contacter</span>
-                  <ArrowRight size={14} className="ml-1" />
-                </button>
-
-                <button
-                  onClick={onOpenCV}
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white bg-[#151a16] hover:bg-[#1f2720] border border-white/10 hover:border-[#dfff5b]/40 transition-all duration-200 active:scale-95 shadow-sm"
-                >
-                  <Eye size={16} className="text-[#dfff5b]" />
-                  <span>Consulter mon CV</span>
-                </button>
-
-                <button
-                  onClick={() => scrollTo('projects')}
-                  className="inline-flex items-center gap-1.5 px-4 py-3.5 text-sm font-medium text-slate-400 hover:text-[#dfff5b] transition-colors"
-                >
-                  <span>Voir mes projets</span>
-                  <ArrowRight size={14} />
-                </button>
-              </div>
-            </ScrollReveal>
-
-            {/* 6. Social links */}
-            <ScrollReveal delay={600} direction="up">
-              <div className="flex items-center gap-3 pt-2">
-                <span className="text-xs font-mono text-slate-400">Réseaux :</span>
-                <a
-                  href="https://github.com/Mar11wane-git"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-[#dfff5b]/10 border border-white/10 hover:border-[#dfff5b]/40 text-slate-300 hover:text-[#dfff5b] transition-colors"
-                  aria-label="GitHub"
-                >
-                  <Github size={17} />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/Marouane-El-Hamdaoui/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-[#dfff5b]/10 border border-white/10 hover:border-[#dfff5b]/40 text-slate-300 hover:text-[#dfff5b] transition-colors"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin size={17} />
-                </a>
-                <a
-                  href="mailto:elhamdawimarwane@gmail.com"
-                  className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-[#dfff5b]/10 border border-white/10 hover:border-[#dfff5b]/40 text-slate-300 hover:text-[#dfff5b] transition-colors"
-                  aria-label="Email"
-                >
-                  <Mail size={17} />
-                </a>
-              </div>
-            </ScrollReveal>
-
-          </div>
-
-          {/* Right Column: Presentation Slide Card */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <ScrollReveal delay={350} direction="left">
-              <div className="relative w-full max-w-[420px] rounded-3xl bg-[#131814]/90 border border-white/10 p-6 sm:p-7 shadow-2xl backdrop-blur-xl">
+      <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
+        {/* Copy */}
+        <div className="lg:col-span-7">
+          <Reveal effect="flip">
+            <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5">
+              <span className="relative flex h-2 w-2">
                 
-                {/* Header of the Slide Card */}
-                <div className="flex items-center justify-between pb-5 mb-5 border-b border-white/[0.08]">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#dfff5b] animate-ping" />
-                    <span className="text-xs font-mono font-bold text-[#dfff5b]">PROFIL VÉRIFIÉ</span>
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-400">Marouane El Hamdaoui</span>
-                </div>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
+              </span>
+              <span className="font-mono text-[11px] text-ink sm:text-xs">{PROFILE.current}</span>
+            </div>
+          </Reveal>
 
-                {/* Profile Photo */}
-                <div className="relative mx-auto w-44 h-44 sm:w-52 sm:h-52 mb-6">
-                  <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-[#dfff5b] via-[#34d399] to-[#22d3ee] opacity-60 blur-sm" />
-                  <div className="relative w-full h-full rounded-2xl overflow-hidden bg-black border-2 border-white/20">
-                    <img
-                      src="/photo pro.jpg"
-                      alt="Marouane El Hamdaoui"
-                      className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                </div>
+          <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-muted">
+            <span className="text-lime">01</span> — Bonjour, je suis
+          </p>
+          <h1 className="font-display text-[clamp(2.6rem,9vw,5.6rem)] font-bold leading-[0.95] tracking-tight text-ink">
+            <span className="sr-only">
+              {PROFILE.firstName} {PROFILE.lastName}
+            </span>
+            <SplitWord text={PROFILE.firstName.toUpperCase()} />
+            <br />
+            {/* gradient text can't paint through per-letter transforms, so the last name flips in as one block */}
+            <span className="char" style={{ ['--i' as string]: 9 }} aria-hidden>
+              <span className="text-shine whitespace-nowrap">{PROFILE.lastName.toUpperCase()}</span>
+            </span>
+          </h1>
 
-                {/* Core Credentials List */}
-                <div className="space-y-2.5 mb-6 text-xs text-slate-300">
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                    <span className="text-slate-400">Poste actuel :</span>
-                    <span className="font-semibold text-white">Pilote Monétique @ HPS</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                    <span className="text-slate-400">Formation :</span>
-                    <span className="font-semibold text-white">Ingénierie Génie Info (HT Rabat)</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                    <span className="text-slate-400">Diplôme précédent :</span>
-                    <span className="font-semibold text-white">DTS Web Full Stack</span>
-                  </div>
-                </div>
+          <Reveal delay={250}>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+              <strong className="text-ink">{PROFILE.headline}</strong> · élève-ingénieur en Génie Informatique. Je conçois des applications web complètes — de l'agent IA{' '}
+              <strong className="text-ink">Vasco</strong> à la plateforme e-learning{' '}
+              <strong className="text-ink">MR1Academy</strong> — avec la rigueur de la production monétique chez{' '}
+              <strong className="text-lime">HPS</strong>.
+            </p>
+          </Reveal>
 
-                {/* 3 Metric counters */}
-                <div className="grid grid-cols-3 gap-2 text-center pt-2">
-                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                    <div className="text-base sm:text-lg font-bold text-[#dfff5b] font-mono">2026</div>
-                    <div className="text-[10px] text-slate-400">HPS Prod</div>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                    <div className="text-base sm:text-lg font-bold text-[#34d399] font-mono">4+</div>
-                    <div className="text-[10px] text-slate-400">Projets Web</div>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                    <div className="text-base sm:text-lg font-bold text-[#22d3ee] font-mono">Bac+5</div>
-                    <div className="text-[10px] text-slate-400">Génie Info</div>
-                  </div>
-                </div>
-
+          <Reveal delay={350}>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => goTo(3)}
+                className="group inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0e120f] shadow-[0_8px_24px_-10px_rgba(214,242,94,0.45)] transition-transform hover:-translate-y-0.5"
+              >
+                Voir les projets
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              </button>
+              <button
+                onClick={onOpenCV}
+                className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-[#d6f25e]"
+              >
+                <Eye size={16} className="text-lime" />
+                Mon CV
+              </button>
+              <div className="flex items-center gap-2">
+                {[
+                  { href: PROFILE.github, icon: Github, label: 'GitHub' },
+                  { href: PROFILE.linkedin, icon: Linkedin, label: 'LinkedIn' },
+                  { href: `mailto:${PROFILE.email}`, icon: Mail, label: 'E-mail' },
+                ].map(({ href, icon: Icon, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-line text-muted transition-colors hover:border-[#d6f25e] hover:text-lime"
+                  >
+                    <Icon size={18} />
+                  </a>
+                ))}
               </div>
-            </ScrollReveal>
-          </div>
+            </div>
+          </Reveal>
 
+          <Reveal delay={450}>
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
+              {[
+                { k: `${PROJECTS.length}`, v: 'Projets livrés' },
+                { k: 'Bac+5', v: 'Génie Info' },
+                { k: '24/7', v: 'Prod. monétique' },
+              ].map((s) => (
+                <div key={s.v} className="rounded-2xl border border-line bg-[rgba(18,23,19,0.7)] p-3 sm:p-4">
+                  <dt className="sr-only">{s.v}</dt>
+                  <dd className="font-display text-xl font-bold text-ink sm:text-2xl">{s.k}</dd>
+                  <dd className="mt-0.5 text-[11px] text-muted sm:text-xs">{s.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
         </div>
 
+        {/* 3D scene */}
+        <div className="lg:col-span-5">
+          <Reveal effect="zoom" delay={150}>
+            <div className="orbit-scene relative mx-auto aspect-square w-full max-w-[min(440px,88vw)]">
+              <div className="orbit-tilt">
+                <span className="orbit-path" aria-hidden />
+                <div className="orbit-ring" aria-hidden>
+                  {ORBIT.map((label, i) => (
+                    <span key={label} className="orbit-item" style={{ ['--a' as string]: `${(360 / ORBIT.length) * i}deg` }}>
+                      <span className="block whitespace-nowrap rounded-full border border-[rgba(214,242,94,0.35)] bg-[rgba(18,23,19,0.92)] px-3 py-1.5 font-mono text-[10px] font-semibold text-lime sm:text-xs">
+                        {label}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+
+                <div className="absolute left-1/2 top-1/2 w-[46%] -translate-x-1/2 -translate-y-1/2">
+                  <div className="float-y">
+                    <Tilt max={14} className="rounded-[26px]">
+                      <div className="relative overflow-hidden rounded-[26px] border border-[rgba(255,255,255,0.15)] bg-surface p-1.5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]">
+                        <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-[#d6f25e] via-[#3fcf98] to-[#38c6dc] opacity-40" aria-hidden />
+                        <img
+                          src={PROFILE.photo}
+                          alt={`${PROFILE.firstName} ${PROFILE.lastName}`}
+                          className="relative aspect-[4/5] w-full rounded-[20px] object-cover object-top"
+                          loading="eager"
+                        />
+                      </div>
+                    </Tilt>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+          <p className="mt-2 flex items-center justify-center gap-1.5 font-mono text-[11px] text-muted">
+            <MapPin size={12} className="text-lime" /> {PROFILE.location}
+          </p>
+        </div>
       </div>
-    </section>
+    </Slide>
   );
 };
 

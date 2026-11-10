@@ -2,88 +2,478 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───────────── Tokens ───────────── */
+/* Comfort palette: soft off-black (no pure black), off-white text (no pure
+   white) and a slightly calmer lime, which reduces halation and glare. */
+:root {
+  --bg: #0e120f;
+  --surface: #151a16;
+  --surface-2: #1b221c;
+  --line: rgba(255, 255, 255, 0.08);
+  --ink: #e6ebe3;
+  --muted: #a2ada5;
+  --lime: #d6f25e;
+  --emerald: #3fcf98;
+  --cyan: #38c6dc;
+  --violet: #a594f0;
+  --amber: #f0bd45;
+
+  /* coverflow geometry */
+  --cf-w: 250px;
+  --cf-h: 340px;
+  --cf-gap: 150px;
+
+  /* hero orbit */
+  --orbit-r: 150px;
+
+  color-scheme: dark;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --cf-w: 290px;
+    --cf-h: 360px;
+    --cf-gap: 210px;
+    --orbit-r: 190px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --cf-w: 320px;
+    --cf-h: 380px;
+    --cf-gap: 270px;
+    --orbit-r: 215px;
+  }
+}
+
 @layer base {
-
-    html,
-    body,
-    #root {
-        @apply bg-black text-white;
-    }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  html,
+  body,
+  #root {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: rgba(214, 242, 94, 0.3);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--lime), var(--emerald));
+    border-radius: 4px;
+  }
 }
 
-/* ───────── PowerPoint-style slide transitions (see SlideTransition.tsx) ─────────
-   Out of view, a slide waits in its "before" state; when it reaches the screen
-   the transition plays once. Keyframes (not transitions) are used so that, once
-   finished, the slide has no leftover transform / clip-path at all. */
+.font-display {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
 
-.ppt-slide:not(.ppt-play) {
+/* ───────────── Background stage ───────────── */
+.stage-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Static, soft ambient light: nothing moves in peripheral vision. */
+  background:
+    radial-gradient(55% 45% at 12% 8%, rgba(214, 242, 94, 0.06), transparent 65%),
+    radial-gradient(45% 40% at 92% 35%, rgba(56, 198, 220, 0.05), transparent 65%),
+    radial-gradient(70% 55% at 50% 110%, rgba(63, 207, 152, 0.06), transparent 65%),
+    var(--bg);
+}
+.stage-grid {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -5%;
+  height: 55%;
+  transform: perspective(520px) rotateX(72deg);
+  transform-origin: 50% 100%;
+  background-image:
+    linear-gradient(rgba(214, 242, 94, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 242, 94, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 80%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 80%);
+}
+
+/* ───────────── Slides ───────────── */
+.slide {
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+}
+/* transform / opacity are written by useDeck only while a slide is entering or leaving */
+.slide-stage {
+  transform-origin: 50% 50%;
+}
+.slide-frame {
+  background: rgba(20, 25, 21, 0.92);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 30px 80px -40px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.frame-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--lime);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ───────────── Builds (reveal) ───────────── */
+/* Short, small-amplitude builds: quick to read, easy on the eyes. */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.55s ease-out,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-rise {
+  transform: translate3d(0, 18px, 0);
+}
+.reveal-flip {
+  transform: perspective(1000px) rotateX(-14deg) translate3d(0, 14px, 0);
+  transform-origin: 50% 0%;
+}
+.reveal-left {
+  transform: perspective(1000px) rotateY(8deg) translate3d(-18px, 0, 0);
+  transform-origin: 0% 50%;
+}
+.reveal-right {
+  transform: perspective(1000px) rotateY(-8deg) translate3d(18px, 0, 0);
+  transform-origin: 100% 50%;
+}
+.reveal-zoom {
+  transform: perspective(1000px) translate3d(0, 0, -60px);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero name: per-letter 3D flip */
+.char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  animation: char-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i) * 30ms + 100ms);
+}
+@keyframes char-in {
+  from {
     opacity: 0;
-}
-.ppt-wipe:not(.ppt-play) {
+    transform: perspective(600px) rotateX(-60deg) translateY(20%);
+  }
+  to {
     opacity: 1;
-    clip-path: inset(0 100% 0 0);
+    transform: none;
+  }
 }
-.ppt-split:not(.ppt-play) {
+/* Static gradient: an animated background-position would repaint every frame. */
+.text-shine {
+  background: linear-gradient(100deg, var(--lime) 0%, var(--emerald) 55%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ───────────── Tilt ───────────── */
+.tilt {
+  position: relative;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.tilt[data-active] {
+  transition: transform 0.08s linear;
+}
+.tilt-glare {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.06), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tilt[data-active] .tilt-glare {
+  opacity: 1;
+}
+
+/* ───────────── Hero orbit ───────────── */
+.orbit-scene {
+  perspective: 1100px;
+}
+.orbit-tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-12deg) rotateZ(-4deg);
+}
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: orbit-spin 50s linear infinite;
+}
+.orbit-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+  animation: orbit-face 50s linear infinite;
+}
+@keyframes orbit-spin {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes orbit-face {
+  from {
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(var(--orbit-r)) rotateY(calc(var(--a) * -1));
+  }
+  to {
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(var(--orbit-r)) rotateY(calc(var(--a) * -1 - 360deg));
+  }
+}
+.orbit-path {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--orbit-r) * 2);
+  height: calc(var(--orbit-r) * 2);
+  margin: calc(var(--orbit-r) * -1) 0 0 calc(var(--orbit-r) * -1);
+  border-radius: 9999px;
+  border: 1px dashed rgba(214, 242, 94, 0.22);
+  transform: rotateX(90deg);
+}
+.float-y {
+  animation: float-y 9s ease-in-out infinite;
+}
+@keyframes float-y {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ───────────── Coverflow ───────────── */
+.cf {
+  position: relative;
+  height: var(--cf-h);
+  perspective: 1300px;
+  touch-action: pan-y;
+  user-select: none;
+}
+.cf-track {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.cf-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--cf-w);
+  height: 100%;
+  margin-left: calc(var(--cf-w) / -2);
+  transform: translateX(calc(var(--o) * var(--cf-gap))) translateZ(calc(var(--ao) * -170px)) rotateY(calc(var(--o) * -34deg));
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.4s,
+    filter 0.4s;
+  filter: brightness(calc(1 - var(--ao) * 0.3));
+}
+.cf-card[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+.cf-reflection {
+  -webkit-box-reflect: below 10px linear-gradient(transparent 70%, rgba(0, 0, 0, 0.25));
+}
+
+/* Project details panel switch */
+.swap-in {
+  animation: swap-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
     opacity: 1;
-    clip-path: inset(0 50% 0 50%);
+    transform: none;
+  }
 }
 
-.ppt-play.ppt-fade {
-    animation: ppt-fade 0.8s ease-out;
+/* ───────────── Flip cards ───────────── */
+.flip {
+  perspective: 1200px;
 }
-.ppt-play.ppt-push {
-    animation: ppt-push 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+.flip-inner {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.ppt-play.ppt-wipe {
-    animation: ppt-wipe 0.95s cubic-bezier(0.65, 0, 0.35, 1);
+.flip[data-flipped='true'] .flip-inner {
+  transform: rotateY(180deg);
 }
-.ppt-play.ppt-cube {
-    transform-origin: 50% 0%;
-    animation: ppt-cube 1s cubic-bezier(0.16, 1, 0.3, 1);
+@media (hover: hover) {
+  .flip:hover .flip-inner {
+    transform: rotateY(180deg);
+  }
 }
-.ppt-play.ppt-zoom {
-    animation: ppt-zoom 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+.flip-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
-.ppt-play.ppt-split {
-    animation: ppt-split 0.95s cubic-bezier(0.65, 0, 0.35, 1);
+.flip-back {
+  transform: rotateY(180deg);
 }
-
-@keyframes ppt-fade {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.bar-fill {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
 }
-@keyframes ppt-push {
-    from { opacity: 0; transform: translate3d(0, 16vh, 0); }
-    to { opacity: 1; transform: translate3d(0, 0, 0); }
+.flip[data-flipped='true'] .bar-fill {
+  transform: scaleX(var(--v));
 }
-@keyframes ppt-wipe {
-    from { clip-path: inset(0 100% 0 0); }
-    to { clip-path: inset(0 0 0 0); }
-}
-@keyframes ppt-cube {
-    from { opacity: 0; transform: perspective(1600px) rotateX(-16deg) translate3d(0, 8vh, -120px); }
-    to { opacity: 1; transform: perspective(1600px) rotateX(0deg) translate3d(0, 0, 0); }
-}
-@keyframes ppt-zoom {
-    from { opacity: 0; transform: scale(0.86); }
-    to { opacity: 1; transform: scale(1); }
-}
-@keyframes ppt-split {
-    from { clip-path: inset(0 50% 0 50%); }
-    to { clip-path: inset(0 0 0 0); }
+@media (hover: hover) {
+  .flip:hover .bar-fill {
+    transform: scaleX(var(--v));
+  }
 }
 
+/* ───────────── Deck chrome ───────────── */
+.deck-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.cube {
+  transform-style: preserve-3d;
+  animation: cube-spin 12s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.cube > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(214, 242, 94, 0.6);
+  background: rgba(214, 242, 94, 0.08);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--lime);
+}
+@keyframes cube-spin {
+  0%,
+  15% {
+    transform: rotateX(-20deg) rotateY(0deg);
+  }
+  25%,
+  40% {
+    transform: rotateX(-20deg) rotateY(-90deg);
+  }
+  50%,
+  65% {
+    transform: rotateX(-20deg) rotateY(-180deg);
+  }
+  75%,
+  90% {
+    transform: rotateX(-20deg) rotateY(-270deg);
+  }
+  100% {
+    transform: rotateX(-20deg) rotateY(-360deg);
+  }
+}
+.marquee {
+  animation: marquee 70s linear infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 1.8s ease-in-out infinite;
+}
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+.modal-in {
+  animation: modal-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+
+/* ───────────── Reduced motion ───────────── */
 @media (prefers-reduced-motion: reduce) {
-    .ppt-slide,
-    .ppt-slide:not(.ppt-play) {
-        opacity: 1 !important;
-        clip-path: none !important;
-        animation: none !important;
-    }
-    .ppt-build {
-        opacity: 1 !important;
-        transform: none !important;
-        clip-path: none !important;
-        transition: none !important;
-    }
+  html {
+    scroll-behavior: auto;
+  }
+  .slide-stage {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .char,
+  .orbit-ring,
+  .orbit-item,
+  .stage-grid,
+  .cube,
+  .marquee,
+  .text-shine,
+  .float-y,
+  .scroll-cue,
+  .swap-in,
+  .modal-in {
+    animation: none !important;
+  }
+  .orbit-item {
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(var(--orbit-r)) rotateY(calc(var(--a) * -1));
+  }
 }
