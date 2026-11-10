@@ -19,10 +19,7 @@ function App() {
   return (
     <div className="relative min-h-screen overflow-x-clip">
       <div className="stage-bg" aria-hidden>
-        <div className="stage-orb a" />
-        <div className="stage-orb b" />
         <div className="stage-grid" />
-        <div className="stage-noise" />
       </div>
 
       <Header active={active} goTo={goTo} onOpenCV={openCV} />

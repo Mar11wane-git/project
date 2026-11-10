@@ -5,7 +5,7 @@ import Reveal from './deck/Reveal';
 import { SKILLS, type SkillGroup } from '../data/portfolio';
 
 const ICONS = { code: Code2, server: Server, database: Database, cpu: Cpu, wrench: Wrench, terminal: Terminal };
-const COLORS = ['#dfff5b', '#34d399', '#22d3ee', '#a78bfa', '#fbbf24', '#dfff5b'];
+const COLORS = ['#d6f25e', '#3fcf98', '#38c6dc', '#a594f0', '#f0bd45', '#d6f25e'];
 
 const MARQUEE = [
   'Java', 'Spring Boot', 'Spring MVC', 'JEE', 'PHP', 'Laravel', 'Node.js', 'React', 'Redux Toolkit', 'Tailwind CSS',
@@ -87,7 +87,7 @@ const Skills: React.FC = () => (
   >
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {SKILLS.map((g, i) => (
-        <Reveal key={g.id} effect="flip" delay={(i % 3) * 120}>
+        <Reveal key={g.id} effect="flip" delay={(i % 3) * 70}>
           <FlipCard g={g} color={COLORS[i]} />
         </Reveal>
       ))}

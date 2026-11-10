@@ -45,7 +45,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
           <Reveal effect="flip">
             <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime opacity-75" />
+                
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
               </span>
               <span className="font-mono text-[11px] text-ink sm:text-xs">{PROFILE.current}</span>
@@ -67,7 +67,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
             </span>
           </h1>
 
-          <Reveal delay={600}>
+          <Reveal delay={250}>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
               <strong className="text-ink">{PROFILE.headline}</strong> · élève-ingénieur en Génie Informatique. Je conçois des applications web complètes — de l'agent IA{' '}
               <strong className="text-ink">Vasco</strong> à la plateforme e-learning{' '}
@@ -76,18 +76,18 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
             </p>
           </Reveal>
 
-          <Reveal delay={750}>
+          <Reveal delay={350}>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <button
                 onClick={() => goTo(3)}
-                className="group inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0a0d0b] shadow-[0_0_30px_rgba(223,255,91,0.35)] transition-transform hover:-translate-y-0.5"
+                className="group inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0e120f] shadow-[0_8px_24px_-10px_rgba(214,242,94,0.45)] transition-transform hover:-translate-y-0.5"
               >
                 Voir les projets
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </button>
               <button
                 onClick={onOpenCV}
-                className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]"
+                className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-[#d6f25e]"
               >
                 <Eye size={16} className="text-lime" />
                 Mon CV
@@ -104,7 +104,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
                     target={href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-line text-muted transition-colors hover:border-[#dfff5b] hover:text-lime"
+                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-line text-muted transition-colors hover:border-[#d6f25e] hover:text-lime"
                   >
                     <Icon size={18} />
                   </a>
@@ -113,7 +113,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
             </div>
           </Reveal>
 
-          <Reveal delay={900}>
+          <Reveal delay={450}>
             <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
               {[
                 { k: `${PROJECTS.length}`, v: 'Projets livrés' },
@@ -132,14 +132,14 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
 
         {/* 3D scene */}
         <div className="lg:col-span-5">
-          <Reveal effect="zoom" delay={300}>
+          <Reveal effect="zoom" delay={150}>
             <div className="orbit-scene relative mx-auto aspect-square w-full max-w-[min(440px,88vw)]">
               <div className="orbit-tilt">
                 <span className="orbit-path" aria-hidden />
                 <div className="orbit-ring" aria-hidden>
                   {ORBIT.map((label, i) => (
                     <span key={label} className="orbit-item" style={{ ['--a' as string]: `${(360 / ORBIT.length) * i}deg` }}>
-                      <span className="block whitespace-nowrap rounded-full border border-[rgba(223,255,91,0.35)] bg-[rgba(18,23,19,0.92)] px-3 py-1.5 font-mono text-[10px] font-semibold text-lime shadow-[0_0_18px_rgba(223,255,91,0.15)] sm:text-xs">
+                      <span className="block whitespace-nowrap rounded-full border border-[rgba(214,242,94,0.35)] bg-[rgba(18,23,19,0.92)] px-3 py-1.5 font-mono text-[10px] font-semibold text-lime sm:text-xs">
                         {label}
                       </span>
                     </span>
@@ -150,7 +150,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
                   <div className="float-y">
                     <Tilt max={14} className="rounded-[26px]">
                       <div className="relative overflow-hidden rounded-[26px] border border-[rgba(255,255,255,0.15)] bg-surface p-1.5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]">
-                        <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-[#dfff5b] via-[#34d399] to-[#22d3ee] opacity-40" aria-hidden />
+                        <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-[#d6f25e] via-[#3fcf98] to-[#38c6dc] opacity-40" aria-hidden />
                         <img
                           src={PROFILE.photo}
                           alt={`${PROFILE.firstName} ${PROFILE.lastName}`}

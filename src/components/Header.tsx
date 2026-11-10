@@ -63,13 +63,13 @@ const Header: React.FC<HeaderProps> = ({ active, goTo, onOpenCV }) => {
     <>
       {/* progress */}
       <div className="fixed inset-x-0 top-0 z-50 h-[3px] bg-transparent">
-        <div className="deck-progress h-full bg-gradient-to-r from-[#dfff5b] via-[#34d399] to-[#22d3ee]" />
+        <div id="deck-progress" className="deck-progress h-full bg-gradient-to-r from-[#d6f25e] via-[#3fcf98] to-[#38c6dc]" />
       </div>
 
       {/* top bar */}
       <header
         className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-          scrolled ? 'border-b border-line bg-[rgba(10,13,11,0.78)] backdrop-blur-md' : 'bg-transparent'
+          scrolled ? 'border-b border-line bg-[rgba(14,18,15,0.95)]' : 'bg-transparent'
         }`}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-10">
@@ -106,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({ active, goTo, onOpenCV }) => {
             {canFullscreen && (
               <button
                 onClick={toggleFullscreen}
-                className="hidden items-center gap-2 rounded-xl border border-line px-3 py-2 text-xs font-semibold text-ink transition-colors hover:border-[#dfff5b] sm:inline-flex"
+                className="hidden items-center gap-2 rounded-xl border border-line px-3 py-2 text-xs font-semibold text-ink transition-colors hover:border-[#d6f25e] sm:inline-flex"
                 title="Mode présentation plein écran"
               >
                 {isFull ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
@@ -115,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({ active, goTo, onOpenCV }) => {
             )}
             <button
               onClick={onOpenCV}
-              className="inline-flex items-center gap-2 rounded-xl bg-lime px-3.5 py-2 text-xs font-bold text-[#0a0d0b] shadow-[0_0_24px_rgba(223,255,91,0.35)] transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-xl bg-lime px-3.5 py-2 text-xs font-bold text-[#0e120f] shadow-[0_6px_18px_-8px_rgba(214,242,94,0.45)] transition-transform hover:-translate-y-0.5"
             >
               <FileText size={14} />
               CV
@@ -134,7 +134,7 @@ const Header: React.FC<HeaderProps> = ({ active, goTo, onOpenCV }) => {
 
       {/* mobile menu: slides shown as a 3D stack */}
       <div
-        className={`fixed inset-0 z-30 bg-[rgba(10,13,11,0.92)] backdrop-blur-lg transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-30 bg-[rgba(14,18,15,0.98)] transition-opacity duration-300 lg:hidden ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={() => setOpen(false)}
@@ -153,7 +153,7 @@ const Header: React.FC<HeaderProps> = ({ active, goTo, onOpenCV }) => {
                 opacity: open ? 1 : 0,
               }}
               className={`flex origin-top items-center gap-4 rounded-2xl border px-5 py-4 text-left transition-all duration-500 ${
-                active === i ? 'border-[#dfff5b] bg-[rgba(223,255,91,0.08)]' : 'border-line bg-surface'
+                active === i ? 'border-[#d6f25e] bg-[rgba(214,242,94,0.08)]' : 'border-line bg-surface'
               }`}
             >
               <span className="font-mono text-xs text-lime">{String(i + 1).padStart(2, '0')}</span>
@@ -180,7 +180,7 @@ const Header: React.FC<HeaderProps> = ({ active, goTo, onOpenCV }) => {
       </nav>
 
       {/* slide controls */}
-      <div className="fixed bottom-4 right-4 z-30 flex items-center gap-1 rounded-2xl border border-line bg-[rgba(18,23,19,0.85)] p-1 shadow-xl backdrop-blur-md sm:bottom-6 sm:right-6">
+      <div className="fixed bottom-4 right-4 z-30 flex items-center gap-1 rounded-2xl border border-line bg-[rgba(21,26,22,0.96)] p-1 shadow-lg sm:bottom-6 sm:right-6">
         <button
           onClick={() => goTo(active - 1)}
           disabled={active === 0}

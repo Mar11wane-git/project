@@ -13,18 +13,18 @@ const Entry: React.FC<{ item: TimelineItem; index: number }> = ({ item, index })
   const isWork = item.type === 'work';
 
   return (
-    <Reveal effect="flip" delay={index * 110} as="li" className="relative pl-8">
+    <Reveal effect="flip" delay={index * 60} as="li" className="relative pl-8">
       <span
         className={`absolute left-0 top-6 h-3 w-3 -translate-x-1/2 rounded-full border-2 ${
-          isWork ? 'border-[#dfff5b] bg-[#0a0d0b]' : 'border-[#22d3ee] bg-[#0a0d0b]'
+          isWork ? 'border-[#d6f25e] bg-[#0e120f]' : 'border-[#38c6dc] bg-[#0e120f]'
         }`}
         aria-hidden
       />
-      <article className="rounded-2xl border border-line bg-[rgba(10,13,11,0.6)] p-5 transition-colors hover:border-[rgba(223,255,91,0.35)] sm:p-6">
+      <article className="rounded-2xl border border-line bg-[rgba(10,13,11,0.6)] p-5 transition-colors hover:border-[rgba(214,242,94,0.35)] sm:p-6">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className="font-mono text-[11px] text-lime">{item.period}</span>
           {item.badge && (
-            <span className="rounded-full border border-[rgba(223,255,91,0.3)] bg-[rgba(223,255,91,0.08)] px-2 py-0.5 font-mono text-[10px] text-lime">
+            <span className="rounded-full border border-[rgba(214,242,94,0.3)] bg-[rgba(214,242,94,0.08)] px-2 py-0.5 font-mono text-[10px] text-lime">
               {item.badge}
             </span>
           )}

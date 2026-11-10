@@ -5,11 +5,11 @@ import Reveal from './deck/Reveal';
 import { PROFILE, PROJECTS, type Project, type ProjectAccent } from '../data/portfolio';
 
 const ACCENT: Record<ProjectAccent, { c: string; soft: string; deep: string }> = {
-  lime: { c: '#dfff5b', soft: 'rgba(223,255,91,0.14)', deep: '#3a4a12' },
-  violet: { c: '#a78bfa', soft: 'rgba(167,139,250,0.16)', deep: '#2e2158' },
-  emerald: { c: '#34d399', soft: 'rgba(52,211,153,0.14)', deep: '#0f3d2c' },
-  cyan: { c: '#22d3ee', soft: 'rgba(34,211,238,0.14)', deep: '#0b3a44' },
-  amber: { c: '#fbbf24', soft: 'rgba(251,191,36,0.14)', deep: '#4a3508' },
+  lime: { c: '#d6f25e', soft: 'rgba(214,242,94,0.14)', deep: '#3a4a12' },
+  violet: { c: '#a594f0', soft: 'rgba(167,139,250,0.16)', deep: '#2e2158' },
+  emerald: { c: '#3fcf98', soft: 'rgba(52,211,153,0.14)', deep: '#0f3d2c' },
+  cyan: { c: '#38c6dc', soft: 'rgba(34,211,238,0.14)', deep: '#0b3a44' },
+  amber: { c: '#f0bd45', soft: 'rgba(251,191,36,0.14)', deep: '#4a3508' },
 };
 
 const Card: React.FC<{ p: Project; isActive: boolean }> = ({ p, isActive }) => {
@@ -41,7 +41,7 @@ const Card: React.FC<{ p: Project; isActive: boolean }> = ({ p, isActive }) => {
         <div className="absolute inset-x-5 top-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-wider">
           <span style={{ color: a.c }}>{p.year}</span>
           {p.isNew && (
-            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold text-[#0a0d0b]" style={{ background: a.c }}>
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold text-[#0e120f]" style={{ background: a.c }}>
               <Sparkles size={10} /> Nouveau
             </span>
           )}
@@ -123,8 +123,8 @@ const Details: React.FC<{ p: Project }> = ({ p }) => {
               rel="noopener noreferrer"
               className={
                 l.kind === 'live'
-                  ? 'inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-[#0a0d0b] transition-transform hover:-translate-y-0.5'
-                  : 'inline-flex items-center gap-2 rounded-xl border border-line px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]'
+                  ? 'inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-[#0e120f] transition-transform hover:-translate-y-0.5'
+                  : 'inline-flex items-center gap-2 rounded-xl border border-line px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-[#d6f25e]'
               }
               style={l.kind === 'live' ? { background: a.c } : undefined}
             >
@@ -135,7 +135,7 @@ const Details: React.FC<{ p: Project }> = ({ p }) => {
           {p.links.length === 0 && (
             <a
               href={`mailto:${PROFILE.email}?subject=${encodeURIComponent(`Démo ${p.title}`)}`}
-              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-[#0a0d0b] transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-[#0e120f] transition-transform hover:-translate-y-0.5"
               style={{ background: a.c }}
             >
               <Mail size={16} />
@@ -222,7 +222,7 @@ const Projects: React.FC = () => {
       <div className="mb-6 mt-6 flex items-center justify-center gap-4">
         <button
           onClick={() => go(active - 1)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-[#dfff5b] hover:text-lime"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-[#d6f25e] hover:text-lime"
           aria-label="Projet précédent"
         >
           <ArrowLeft size={18} />
@@ -241,7 +241,7 @@ const Projects: React.FC = () => {
         </div>
         <button
           onClick={() => go(active + 1)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-[#dfff5b] hover:text-lime"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-[#d6f25e] hover:text-lime"
           aria-label="Projet suivant"
         >
           <ArrowRight size={18} />

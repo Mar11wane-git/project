@@ -3,10 +3,14 @@ import { SLIDES } from '../data/portfolio';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
+// Gentle ease so a slide starts and settles softly instead of moving linearly.
+const smooth = (t: number) => t * t * (3 - 2 * t);
+
 /**
- * Drives the presentation: writes --p / --ap (signed / absolute slide offset)
- * on every [data-slide] element so CSS can tilt it in 3D, tracks the active
- * slide and exposes goTo / next / prev with keyboard shortcuts.
+ * Drives the presentation: tilts each slide's .slide-stage in 3D as it enters /
+ * leaves (written straight to style.transform: no inherited CSS variables, so a
+ * scroll frame never restyles the whole page), tracks the active slide and
+ * exposes goTo with keyboard shortcuts.
  */
 export function useDeck() {
   const [active, setActive] = useState(0);
@@ -14,10 +18,16 @@ export function useDeck() {
   useEffect(() => {
     let frame = 0;
     let current = -1;
+    const last = new WeakMap<HTMLElement, string>();
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const progress = document.getElementById('deck-progress');
 
     const update = () => {
       frame = 0;
       const vh = window.innerHeight;
+      const mobile = window.innerWidth < 768;
+      const rx = mobile ? 4 : 7; // deg
+      const tz = mobile ? -50 : -110; // px
       const slides = document.querySelectorAll<HTMLElement>('[data-slide]');
       let best = 0;
       let bestDist = Infinity;
@@ -27,8 +37,25 @@ export function useDeck() {
         let p = 0;
         if (r.top > 0 && r.bottom > vh) p = clamp(r.top / vh, 0, 1);
         else if (r.bottom < vh && r.top < 0) p = -clamp((vh - r.bottom) / vh, 0, 1);
-        el.style.setProperty('--p', p.toFixed(4));
-        el.style.setProperty('--ap', Math.abs(p).toFixed(4));
+
+        const stage = el.firstElementChild as HTMLElement | null;
+        if (stage) {
+          const a = reduce.matches ? 0 : smooth(Math.abs(p));
+          const s = Math.sign(p);
+          const key = a < 0.002 ? '0' : a.toFixed(3) + s;
+          if (last.get(stage) !== key) {
+            last.set(stage, key);
+            if (key === '0') {
+              stage.style.transform = '';
+              stage.style.opacity = '';
+              stage.style.willChange = '';
+            } else {
+              stage.style.transform = `translate3d(0, ${(s * a * vh * 0.05).toFixed(1)}px, ${(a * tz).toFixed(1)}px) rotateX(${(s * a * rx).toFixed(2)}deg)`;
+              stage.style.opacity = (1 - a * 0.45).toFixed(3);
+              stage.style.willChange = 'transform, opacity';
+            }
+          }
+        }
 
         // Active slide = the one covering the viewport's upper-middle line.
         const anchor = vh * 0.4;
@@ -39,8 +66,10 @@ export function useDeck() {
         }
       });
 
-      const max = document.documentElement.scrollHeight - vh;
-      document.documentElement.style.setProperty('--scroll', String(max > 0 ? clamp(window.scrollY / max, 0, 1) : 0));
+      if (progress) {
+        const max = document.documentElement.scrollHeight - vh;
+        progress.style.transform = `scaleX(${(max > 0 ? clamp(window.scrollY / max, 0, 1) : 0).toFixed(4)})`;
+      }
 
       if (best !== current) {
         current = best;

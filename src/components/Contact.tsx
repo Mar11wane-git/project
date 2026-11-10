@@ -30,7 +30,7 @@ const Contact: React.FC = () => {
   };
 
   const field =
-    'w-full rounded-xl border border-line bg-[rgba(10,13,11,0.7)] px-4 py-3 text-sm text-ink placeholder:text-[#5f6b62] outline-none transition-colors focus:border-[#dfff5b]';
+    'w-full rounded-xl border border-line bg-[rgba(10,13,11,0.7)] px-4 py-3 text-sm text-ink placeholder:text-[#5f6b62] outline-none transition-colors focus:border-[#d6f25e]';
 
   const channels = [
     { key: 'mail', icon: Mail, label: 'E-mail', value: PROFILE.email, href: `mailto:${PROFILE.email}`, copy: PROFILE.email },
@@ -89,7 +89,7 @@ const Contact: React.FC = () => {
                   href={PROFILE.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-line py-3 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-line py-3 text-sm font-semibold text-ink transition-colors hover:border-[#d6f25e]"
                 >
                   <Github size={16} /> GitHub
                 </a>
@@ -97,7 +97,7 @@ const Contact: React.FC = () => {
                   href={PROFILE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-line py-3 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-line py-3 text-sm font-semibold text-ink transition-colors hover:border-[#d6f25e]"
                 >
                   <Linkedin size={16} /> LinkedIn
                 </a>
@@ -106,7 +106,7 @@ const Contact: React.FC = () => {
           </Tilt>
         </Reveal>
 
-        <Reveal effect="right" delay={150} className="lg:col-span-7">
+        <Reveal effect="right" delay={80} className="lg:col-span-7">
           <form onSubmit={onSubmit} className="grid h-full gap-4 rounded-3xl border border-line bg-[rgba(10,13,11,0.6)] p-6 sm:grid-cols-2 sm:p-7">
             <label className="grid gap-1.5 text-xs text-muted">
               Nom
@@ -145,7 +145,7 @@ const Contact: React.FC = () => {
               <span className="text-xs text-muted">Ouvre votre messagerie avec le message pré-rempli.</span>
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0a0d0b] shadow-[0_0_30px_rgba(223,255,91,0.3)] transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0e120f] shadow-[0_8px_24px_-10px_rgba(214,242,94,0.45)] transition-transform hover:-translate-y-0.5"
               >
                 <Send size={16} /> Envoyer
               </button>

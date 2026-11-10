@@ -5,7 +5,7 @@ import Reveal from './deck/Reveal';
 import Tilt from './deck/Tilt';
 import { PILLARS, PROFILE } from '../data/portfolio';
 
-const ACCENTS = ['#dfff5b', '#34d399', '#22d3ee', '#a78bfa'];
+const ACCENTS = ['#d6f25e', '#3fcf98', '#38c6dc', '#a594f0'];
 
 const About: React.FC = () => {
   const facts = [
@@ -51,7 +51,7 @@ const About: React.FC = () => {
           </div>
         </Reveal>
 
-        <Reveal effect="right" delay={150} className="lg:col-span-5">
+        <Reveal effect="right" delay={80} className="lg:col-span-5">
           <ul className="grid h-full gap-3">
             {facts.map(({ icon: Icon, label, value, href }) => (
               <li key={label} className="flex items-center gap-4 rounded-2xl border border-line bg-[rgba(10,13,11,0.6)] p-4">
@@ -76,7 +76,7 @@ const About: React.FC = () => {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {PILLARS.map((p, i) => (
-          <Reveal key={p.title} effect="flip" delay={i * 120}>
+          <Reveal key={p.title} effect="flip" delay={i * 70}>
             <Tilt className="h-full rounded-2xl">
               <div className="h-full rounded-2xl border border-line bg-surface p-5">
                 <div className="mb-4 flex items-center justify-between">
