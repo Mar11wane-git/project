@@ -9,11 +9,9 @@ interface HeaderProps {
 }
 
 const Logo: React.FC = () => (
-  <span
-    className="flex h-8 w-8 items-center justify-center rounded-md border border-[rgba(214,242,94,0.6)] bg-[rgba(214,242,94,0.08)] font-mono text-[11px] font-bold text-lime"
-    aria-hidden
-  >
-    ME
+  <span className="text-[28px] font-extrabold leading-none tracking-tight" aria-hidden>
+    <span className="text-ink">M</span>
+    <span className="text-lime">E</span>
   </span>
 );
 

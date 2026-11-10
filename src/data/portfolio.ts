@@ -11,6 +11,9 @@ export const PROFILE = {
   phoneHref: 'tel:+212777079774',
   github: 'https://github.com/Mar11wane-git',
   linkedin: 'https://www.linkedin.com/in/Marouane-El-Hamdaoui/',
+  whatsapp: 'https://wa.me/212777079774',
+  whatsappLabel: '07 77 07 97 74',
+  instagram: 'https://www.instagram.com/mar11wane/',
   photo: '/photo pro.jpg',
 };
 
