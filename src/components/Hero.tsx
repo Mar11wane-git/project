@@ -1,176 +1,210 @@
 import React from 'react';
-import { ArrowRight, Eye, Github, Linkedin, Mail, MapPin } from 'lucide-react';
-import Slide from './deck/Slide';
-import Reveal from './deck/Reveal';
-import Tilt from './deck/Tilt';
-import { PROFILE, PROJECTS } from '../data/portfolio';
+import { ArrowRight, Eye, Github, Linkedin, Mail } from 'lucide-react';
+import Reveal from './ui/Reveal';
+import TechIcon from './ui/TechIcon';
+import { PROFILE } from '../data/portfolio';
+import { scrollToSection } from '../hooks/useSections';
 
-interface HeroProps {
-  onOpenCV: () => void;
-  goTo: (i: number) => void;
-}
+/* Editor palette is fixed (always a dark editor), independent of the site theme. */
+const K = ({ c }: { c: string }) => <span style={{ color: '#c792ea' }}>{c}</span>;
+const T = ({ c }: { c: string }) => <span style={{ color: '#82aaff' }}>{c}</span>;
+const S = ({ c }: { c: string }) => <span style={{ color: '#c3e88d' }}>{c}</span>;
+const P = ({ c }: { c: string }) => <span style={{ color: '#89ddff' }}>{c}</span>;
+const C = ({ c }: { c: string }) => <span style={{ color: '#5f6f63' }}>{c}</span>;
 
-const ORBIT = ['React', 'Laravel', 'Spring Boot', 'FastAPI', 'SQL', 'Docker', 'Python', 'Zabbix'];
+const CODE: React.ReactNode[] = [
+  <C key="c" c="// Marouane.java" />,
+  <>
+    <K c="public class " />
+    <T c="Marouane " />
+    <K c="extends " />
+    <T c="Developer " />
+    <P c="{" />
+  </>,
+  <>
+    {'  '}
+    <T c="String " />
+    role <P c="= " />
+    <S c='"Full Stack"' />
+    <P c=";" />
+  </>,
+  <>
+    {'  '}
+    <T c="String" />
+    <P c="[] " />
+    stack <P c="= {" />
+    <S c='"Java"' />, <S c='"PHP"' />, <S c='"React"' />
+    <P c="};" />
+  </>,
+  <>
+    {'  '}
+    <T c="String " />
+    base <P c="= " />
+    <S c='"Casablanca"' />
+    <P c=";" />
+  </>,
+  <>&nbsp;</>,
+  <>
+    {'  '}
+    <K c="public " />
+    <T c="Product " />
+    <span style={{ color: '#ffcb6b' }}>build</span>
+    <P c="(" />
+    <T c="Idea " />
+    idea<P c=") {" />
+  </>,
+  <>
+    {'    '}
+    <K c="return " />
+    ship<P c="(" />
+    design<P c="(" />
+    idea<P c="));" />
+    <span className="caret ml-1" />
+  </>,
+  <>
+    {'  '}
+    <P c="}" />
+  </>,
+  <P key="end" c="}" />,
+];
 
-const SplitWord: React.FC<{ text: string }> = ({ text }) => (
-  <span className="inline-block whitespace-nowrap" aria-hidden>
-    {[...text].map((c, i) => (
-      <span key={i} className="char" style={{ ['--i' as string]: i }}>
-        {c === ' ' ? ' ' : c}
-      </span>
-    ))}
-  </span>
-);
+const CHIPS = [
+  { name: 'Spring Boot', icon: 'spring/spring-original', cls: 'left-6 -top-1 sm:left-10 sm:-top-3', d: '' },
+  { name: 'React', icon: 'react/react-original', cls: '-right-1 top-0 sm:-right-6', d: 'd2' },
+  { name: 'Laravel', icon: 'laravel/laravel-original', cls: '-left-1 bottom-20 sm:-left-10', d: 'd3' },
+  { name: 'MySQL', icon: 'mysql/mysql-original', cls: '-right-2 bottom-28 sm:-right-8', d: '' },
+];
 
-const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
-  return (
-    <Slide
-      index={0}
-      frame={false}
-      extra={
-        <button
-          onClick={() => goTo(1)}
-          className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted transition-colors hover:text-ink md:flex"
-        >
-          Défiler · Page ↓
-          <span className="flex h-8 w-5 justify-center rounded-full border border-line pt-1.5">
-            <span className="scroll-cue block h-1.5 w-1 rounded-full bg-lime" />
+const Hero: React.FC<{ onOpenCV: () => void }> = ({ onOpenCV }) => (
+  <section id="home" className="relative overflow-hidden pb-16 pt-28 sm:pt-32 lg:flex lg:min-h-[100svh] lg:items-center lg:pb-20">
+    <div className="bg-grid pointer-events-none absolute inset-0" aria-hidden />
+    <div className="glow-lime pointer-events-none absolute -right-40 top-10 h-[520px] w-[620px]" aria-hidden />
+
+    <div className="container-page relative grid items-center gap-14 lg:grid-cols-2 lg:gap-10">
+      {/* copy */}
+      <div>
+        <Reveal>
+          <span className="pill-accent mb-7 inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-xs font-semibold text-accent">
+            <span className="dot-ring flex h-4 w-4 items-center justify-center rounded-full">
+              <span className="h-2 w-2 rounded-full bg-lime" />
+            </span>
+            Disponible — poste de développeur
           </span>
-        </button>
-      }
-    >
-      <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
-        {/* Copy */}
-        <div className="lg:col-span-7">
-          <Reveal effect="flip">
-            <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5">
-              <span className="relative flex h-2 w-2">
-                
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
-              </span>
-              <span className="font-mono text-[11px] text-ink sm:text-xs">{PROFILE.current}</span>
-            </div>
-          </Reveal>
+        </Reveal>
 
-          <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-muted">
-            <span className="text-lime">01</span> — Bonjour, je suis
-          </p>
-          <h1 className="font-display text-[clamp(2.6rem,9vw,5.6rem)] font-bold leading-[0.95] tracking-tight text-ink">
-            <span className="sr-only">
-              {PROFILE.firstName} {PROFILE.lastName}
-            </span>
-            <SplitWord text={PROFILE.firstName.toUpperCase()} />
-            <br />
-            {/* gradient text can't paint through per-letter transforms, so the last name flips in as one block */}
-            <span className="char" style={{ ['--i' as string]: 9 }} aria-hidden>
-              <span className="text-shine whitespace-nowrap">{PROFILE.lastName.toUpperCase()}</span>
-            </span>
+        <Reveal delay={60}>
+          <p className="text-3xl font-medium tracking-tight text-muted sm:text-4xl">Bonjour, je suis</p>
+          <h1 className="mt-1 text-[clamp(2.7rem,7.5vw,4.6rem)] font-extrabold leading-[1.02] tracking-tight">
+            <span className="block text-ink">{PROFILE.firstName}</span>
+            <span className="block text-accent">{PROFILE.lastName.toUpperCase()}</span>
           </h1>
+        </Reveal>
 
-          <Reveal delay={250}>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-              <strong className="text-ink">{PROFILE.headline}</strong> · élève-ingénieur en Génie Informatique. Je conçois des applications web complètes — de l'agent IA{' '}
-              <strong className="text-ink">Vasco</strong> à la plateforme e-learning{' '}
-              <strong className="text-ink">MR1Academy</strong> — avec la rigueur de la production monétique chez{' '}
-              <strong className="text-lime">HPS</strong>.
-            </p>
-          </Reveal>
+        <Reveal delay={120}>
+          <p className="mt-6 text-xl font-bold tracking-tight text-ink sm:text-2xl">
+            Développeur Full Stack <span className="text-accent">|</span> Java · PHP · React
+          </p>
+          <p className="mt-1 text-lg font-medium text-muted sm:text-xl">{PROFILE.subline}</p>
+        </Reveal>
 
-          <Reveal delay={350}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => goTo(3)}
-                className="group inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0e120f] shadow-[0_8px_24px_-10px_rgba(214,242,94,0.45)] transition-transform hover:-translate-y-0.5"
+        <Reveal delay={180}>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted">
+            Je conçois des applications web complètes, de l'API à l'interface : de l'agent IA{' '}
+            <strong className="font-semibold text-ink">Vasco</strong> à la plateforme e-learning{' '}
+            <strong className="font-semibold text-ink">MR1Academy</strong>. Pilote de production monétique chez{' '}
+            <strong className="font-semibold text-ink">HPS</strong>, j'y ai appris la rigueur qu'exige la production.
+          </p>
+        </Reveal>
+
+        <Reveal delay={240}>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <button onClick={() => scrollToSection('projects')} className="btn-lime">
+              Voir mes projets <ArrowRight size={16} />
+            </button>
+            <button onClick={onOpenCV} className="btn-ghost">
+              <Eye size={16} /> Voir mon CV
+            </button>
+          </div>
+          <div className="mt-8 flex items-center gap-2">
+            {[
+              { href: PROFILE.github, icon: Github, label: 'GitHub' },
+              { href: PROFILE.linkedin, icon: Linkedin, label: 'LinkedIn' },
+              { href: `mailto:${PROFILE.email}`, icon: Mail, label: 'E-mail' },
+            ].map(({ href, icon: Icon, label }) => (
+              <a
+                key={label}
+                href={href}
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-11 w-11 items-center justify-center rounded-xl text-muted transition-colors hover:bg-card hover:text-accent"
               >
-                Voir les projets
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-              </button>
-              <button
-                onClick={onOpenCV}
-                className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-[#d6f25e]"
-              >
-                <Eye size={16} className="text-lime" />
-                Mon CV
-              </button>
-              <div className="flex items-center gap-2">
-                {[
-                  { href: PROFILE.github, icon: Github, label: 'GitHub' },
-                  { href: PROFILE.linkedin, icon: Linkedin, label: 'LinkedIn' },
-                  { href: `mailto:${PROFILE.email}`, icon: Mail, label: 'E-mail' },
-                ].map(({ href, icon: Icon, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target={href.startsWith('http') ? '_blank' : undefined}
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-line text-muted transition-colors hover:border-[#d6f25e] hover:text-lime"
-                  >
-                    <Icon size={18} />
-                  </a>
-                ))}
-              </div>
+                <Icon size={20} />
+              </a>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+
+      {/* 3D editor */}
+      <Reveal effect="zoom" delay={150}>
+        <div className="scene-3d relative mx-auto w-full max-w-[560px] py-6">
+          <div className="editor-3d overflow-hidden rounded-2xl border border-white/10 bg-[#111512] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.75)]">
+            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#0c0f0d] px-4 py-3">
+              <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+              <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+              <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+              <span className="ml-3 font-mono text-[11px] text-[#7d8a80]">Marouane.java — portfolio</span>
             </div>
-          </Reveal>
-
-          <Reveal delay={450}>
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
-              {[
-                { k: `${PROJECTS.length}`, v: 'Projets livrés' },
-                { k: 'Bac+5', v: 'Génie Info' },
-                { k: '24/7', v: 'Prod. monétique' },
-              ].map((s) => (
-                <div key={s.v} className="rounded-2xl border border-line bg-[rgba(18,23,19,0.7)] p-3 sm:p-4">
-                  <dt className="sr-only">{s.v}</dt>
-                  <dd className="font-display text-xl font-bold text-ink sm:text-2xl">{s.k}</dd>
-                  <dd className="mt-0.5 text-[11px] text-muted sm:text-xs">{s.v}</dd>
+            <div className="flex border-b border-white/[0.06] font-mono text-[11px]">
+              <span className="border-b-2 border-[#d9f45f] bg-[#111512] px-4 py-2 text-[#e6ebe3]">Marouane.java</span>
+              <span className="px-4 py-2 text-[#5f6f63]">App.tsx</span>
+              <span className="hidden px-4 py-2 text-[#5f6f63] sm:block">api.php</span>
+            </div>
+            <pre className="overflow-hidden px-4 py-4 font-mono text-[11px] leading-[1.85] text-[#d7ddd5] sm:text-[12.5px]">
+              {CODE.map((line, i) => (
+                <div key={i} className="flex">
+                  <span className="mr-4 w-4 select-none text-right text-[#3f4a42]">{i + 1}</span>
+                  <span className="whitespace-pre">{line}</span>
                 </div>
               ))}
-            </dl>
-          </Reveal>
-        </div>
-
-        {/* 3D scene */}
-        <div className="lg:col-span-5">
-          <Reveal effect="zoom" delay={150}>
-            <div className="orbit-scene relative mx-auto aspect-square w-full max-w-[min(440px,88vw)]">
-              <div className="orbit-tilt">
-                <span className="orbit-path" aria-hidden />
-                <div className="orbit-ring" aria-hidden>
-                  {ORBIT.map((label, i) => (
-                    <span key={label} className="orbit-item" style={{ ['--a' as string]: `${(360 / ORBIT.length) * i}deg` }}>
-                      <span className="block whitespace-nowrap rounded-full border border-[rgba(214,242,94,0.35)] bg-[rgba(18,23,19,0.92)] px-3 py-1.5 font-mono text-[10px] font-semibold text-lime sm:text-xs">
-                        {label}
-                      </span>
-                    </span>
-                  ))}
-                </div>
-
-                <div className="absolute left-1/2 top-1/2 w-[46%] -translate-x-1/2 -translate-y-1/2">
-                  <div className="float-y">
-                    <Tilt max={14} className="rounded-[26px]">
-                      <div className="relative overflow-hidden rounded-[26px] border border-[rgba(255,255,255,0.15)] bg-surface p-1.5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]">
-                        <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-[#d6f25e] via-[#3fcf98] to-[#38c6dc] opacity-40" aria-hidden />
-                        <img
-                          src={PROFILE.photo}
-                          alt={`${PROFILE.firstName} ${PROFILE.lastName}`}
-                          className="relative aspect-[4/5] w-full rounded-[20px] object-cover object-top"
-                          loading="eager"
-                        />
-                      </div>
-                    </Tilt>
-                  </div>
-                </div>
-              </div>
+            </pre>
+            <div className="flex items-center justify-between bg-[#d9f45f] px-4 py-1.5 font-mono text-[10px] font-semibold text-[#10140f]">
+              <span>⎇ main · ✓ build passing</span>
+              <span>Java 17 · UTF-8</span>
             </div>
-          </Reveal>
-          <p className="mt-2 flex items-center justify-center gap-1.5 font-mono text-[11px] text-muted">
-            <MapPin size={12} className="text-lime" /> {PROFILE.location}
-          </p>
+          </div>
+
+          {CHIPS.map((c) => (
+            <span
+              key={c.name}
+              className={`float-slow ${c.d} absolute flex items-center gap-2 rounded-xl border border-line bg-card px-3 py-2 text-xs font-semibold text-ink shadow-lg ${c.cls}`}
+            >
+              <TechIcon name={c.name} icon={c.icon} size={16} />
+              {c.name}
+            </span>
+          ))}
+          <span className="float-slow d2 absolute -bottom-2 left-6 hidden items-center gap-3 rounded-2xl border border-line bg-card px-4 py-3 shadow-lg sm:flex">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-lime font-mono text-[11px] font-bold text-on-lime">24/7</span>
+            <span className="text-xs leading-tight">
+              <span className="block font-semibold text-ink">Production monétique</span>
+              <span className="text-muted">HPS · incidents N1/N2</span>
+            </span>
+          </span>
         </div>
-      </div>
-    </Slide>
-  );
-};
+      </Reveal>
+    </div>
+
+    <button
+      onClick={() => scrollToSection('about')}
+      className="container-page absolute inset-x-0 bottom-8 hidden items-center gap-3 text-sm text-muted transition-colors hover:text-ink lg:flex"
+    >
+      <span className="flex h-9 w-6 justify-center rounded-full border border-line-strong pt-2">
+        <span className="scroll-cue block h-1.5 w-1 rounded-full bg-lime" />
+      </span>
+      Défiler pour découvrir
+    </button>
+  </section>
+);
 
 export default Hero;

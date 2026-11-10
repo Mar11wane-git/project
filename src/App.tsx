@@ -8,33 +8,28 @@ import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CVModal from './components/CVModal';
-import { useDeck } from './hooks/useDeck';
+import { useSections } from './hooks/useSections';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
   const [isCVOpen, setIsCVOpen] = useState(false);
-  const { active, goTo } = useDeck();
-  const openCV = () => setIsCVOpen(true);
+  const { active, scrolled } = useSections();
+  const { theme, setTheme } = useTheme();
+  const openCV = useCallback(() => setIsCVOpen(true), []);
   const closeCV = useCallback(() => setIsCVOpen(false), []);
 
   return (
-    <div className="relative min-h-screen overflow-x-clip">
-      <div className="stage-bg" aria-hidden>
-        <div className="stage-grid" />
-      </div>
-
-      <Header active={active} goTo={goTo} onOpenCV={openCV} />
-
-      <main className="relative z-10">
-        <Hero onOpenCV={openCV} goTo={goTo} />
+    <div className="min-h-screen overflow-x-clip bg-bg text-ink">
+      <Header active={active} scrolled={scrolled} theme={theme} onTheme={setTheme} />
+      <main>
+        <Hero onOpenCV={openCV} />
         <About />
-        <Experience />
+        <Experience onOpenCV={openCV} />
         <Projects />
         <Skills />
         <Contact />
       </main>
-
-      <Footer goTo={goTo} />
-
+      <Footer />
       <CVModal isOpen={isCVOpen} onClose={closeCV} />
     </div>
   );

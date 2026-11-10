@@ -1,113 +1,86 @@
-import React, { useState } from 'react';
-import { Code2, Cpu, Database, RotateCcw, Server, Terminal, Wrench } from 'lucide-react';
-import Slide from './deck/Slide';
-import Reveal from './deck/Reveal';
-import { SKILLS, type SkillGroup } from '../data/portfolio';
+import React from 'react';
+import { ArrowRight, Database, Github, Layers, Server, Wrench } from 'lucide-react';
+import Reveal from './ui/Reveal';
+import SectionHeading from './ui/SectionHeading';
+import TechIcon from './ui/TechIcon';
+import { PROFILE, SKILL_GROUPS, SOFT_SKILLS, TOOLBOX } from '../data/portfolio';
 
-const ICONS = { code: Code2, server: Server, database: Database, cpu: Cpu, wrench: Wrench, terminal: Terminal };
-const COLORS = ['#d6f25e', '#3fcf98', '#38c6dc', '#a594f0', '#f0bd45', '#d6f25e'];
-
-const MARQUEE = [
-  'Java', 'Spring Boot', 'Spring MVC', 'JEE', 'PHP', 'Laravel', 'Node.js', 'React', 'Redux Toolkit', 'Tailwind CSS',
-  'MySQL', 'Oracle', 'PL/SQL', 'MongoDB', 'Python', 'FastAPI', 'Docker', 'Git', 'Postman', 'Linux', 'Zabbix', 'Dollar Universe',
-];
-
-const FlipCard: React.FC<{ g: SkillGroup; color: string }> = ({ g, color }) => {
-  const [flipped, setFlipped] = useState(false);
-  const Icon = ICONS[g.icon];
-
-  return (
-    <button
-      type="button"
-      className="flip block h-[300px] w-full text-left"
-      data-flipped={flipped}
-      onClick={() => setFlipped((v) => !v)}
-      aria-pressed={flipped}
-      aria-label={`${g.title} : ${g.skills.map((s) => s.name).join(', ')}`}
-    >
-      <div className="flip-inner">
-        {/* front */}
-        <div className="flip-face flex flex-col rounded-3xl border border-line bg-surface p-6">
-          <span
-            className="flex h-12 w-12 items-center justify-center rounded-2xl"
-            style={{ background: `${color}1f`, color, boxShadow: `0 0 30px ${color}22` }}
-          >
-            <Icon size={22} />
-          </span>
-          <h3 className="mt-5 text-xl font-bold text-ink">{g.title}</h3>
-          <p className="mt-1.5 text-sm text-muted">{g.blurb}</p>
-          <div className="mt-auto flex flex-wrap gap-1.5">
-            {g.skills.slice(0, 4).map((s) => (
-              <span key={s.name} className="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-muted">
-                {s.name}
-              </span>
-            ))}
-          </div>
-          <span className="mt-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider" style={{ color }}>
-            <RotateCcw size={11} /> Retourner pour le détail
-          </span>
-        </div>
-
-        {/* back */}
-        <div
-          className="flip-face flip-back flex flex-col rounded-3xl border p-6"
-          style={{ borderColor: color, background: `linear-gradient(160deg, ${color}14, var(--surface) 60%)` }}
-        >
-          <h3 className="mb-4 font-mono text-xs uppercase tracking-wider" style={{ color }}>
-            {g.title}
-          </h3>
-          <ul className="space-y-3">
-            {g.skills.map((s) => (
-              <li key={s.name}>
-                <div className="mb-1 flex justify-between text-[13px]">
-                  <span className="text-ink">{s.name}</span>
-                  <span className="font-mono text-muted">{s.level}%</span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.07)]">
-                  <div className="bar-fill h-full rounded-full" style={{ background: color, ['--v' as string]: s.level / 100 }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </button>
-  );
-};
+const ICONS = { layers: Layers, server: Server, database: Database, wrench: Wrench };
 
 const Skills: React.FC = () => (
-  <Slide
-    index={4}
-    kicker="Compétences techniques"
-    title={
-      <>
-        Une stack <span className="text-shine">de bout en bout</span>.
-      </>
-    }
-  >
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {SKILLS.map((g, i) => (
-        <Reveal key={g.id} effect="flip" delay={(i % 3) * 70}>
-          <FlipCard g={g} color={COLORS[i]} />
-        </Reveal>
-      ))}
-    </div>
+  <section id="skills" className="section-pad relative overflow-hidden border-t border-line bg-surface">
+    <div className="container-page relative">
+      <SectionHeading
+        index="04"
+        kicker="Compétences"
+        title="Mes compétences"
+        subtitle="Une stack complète pour construire des applications fiables : Java / Spring Boot et Laravel côté serveur, React côté interface."
+        action={
+          <a href={PROFILE.github} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+            <Github size={16} /> Voir mon GitHub <ArrowRight size={15} />
+          </a>
+        }
+      />
 
-    <div
-      className="relative -mx-5 mt-10 overflow-hidden border-y border-line py-4 sm:-mx-8 lg:-mx-12"
-      style={{ maskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)' }}
-      aria-hidden
-    >
-      <div className="marquee flex w-max gap-8">
-        {[...MARQUEE, ...MARQUEE].map((t, i) => (
-          <span key={i} className="flex items-center gap-8 whitespace-nowrap font-display text-lg font-semibold text-muted">
-            {t}
-            <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-          </span>
-        ))}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {SKILL_GROUPS.map((g, i) => {
+          const Icon = ICONS[g.icon];
+          return (
+            <Reveal key={g.title} delay={i * 60} effect="flip" className="h-full">
+              <div className="card h-full p-5 sm:p-6">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-ink">{g.title}</h3>
+                  <Icon size={18} className="text-muted" />
+                </div>
+                <ul className="grid grid-cols-3 gap-x-2 gap-y-5">
+                  {g.items.map((t) => (
+                    <li key={t.name} className="group flex flex-col items-center gap-2 text-center">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-card-2 transition-transform duration-300 group-hover:-translate-y-1">
+                        <TechIcon name={t.name} icon={t.icon} size={24} />
+                      </span>
+                      <span className="text-[11px] font-semibold leading-tight text-ink">{t.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-5">
+        <Reveal className="lg:col-span-3">
+          <div className="card h-full p-5 sm:p-6">
+            <p className="mb-4 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+              <span className="h-px w-6 bg-line-strong" /> Aussi dans ma boîte à outils
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {TOOLBOX.map((t) => (
+                <span key={t.name} className="chip !px-2.5 !py-1.5 !text-xs">
+                  {t.icon && <TechIcon name={t.name} icon={t.icon} size={14} />}
+                  {t.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+        <Reveal delay={60} className="lg:col-span-2">
+          <div className="card h-full p-5 sm:p-6">
+            <p className="mb-4 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+              <span className="h-px w-6 bg-line-strong" /> Méthode & savoir-être
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SOFT_SKILLS.map((s) => (
+                <span key={s} className="soft-accent rounded-md px-2.5 py-1.5 text-xs font-semibold text-accent">
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </div>
     </div>
-  </Slide>
+  </section>
 );
 
 export default Skills;
