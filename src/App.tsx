@@ -1,23 +1,44 @@
-import React from 'react';
+import { useCallback, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
-import Skills from './components/Skills';
+import Experience from './components/Experience';
 import Projects from './components/Projects';
+import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import CVModal from './components/CVModal';
+import { useDeck } from './hooks/useDeck';
 
 function App() {
+  const [isCVOpen, setIsCVOpen] = useState(false);
+  const { active, goTo } = useDeck();
+  const openCV = () => setIsCVOpen(true);
+  const closeCV = useCallback(() => setIsCVOpen(false), []);
+
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header, sections, footer */}
-      <Header />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
-      <Footer />
+    <div className="relative min-h-screen overflow-x-clip">
+      <div className="stage-bg" aria-hidden>
+        <div className="stage-orb a" />
+        <div className="stage-orb b" />
+        <div className="stage-grid" />
+        <div className="stage-noise" />
+      </div>
+
+      <Header active={active} goTo={goTo} onOpenCV={openCV} />
+
+      <main className="relative z-10">
+        <Hero onOpenCV={openCV} goTo={goTo} />
+        <About />
+        <Experience />
+        <Projects />
+        <Skills />
+        <Contact />
+      </main>
+
+      <Footer goTo={goTo} />
+
+      <CVModal isOpen={isCVOpen} onClose={closeCV} />
     </div>
   );
 }

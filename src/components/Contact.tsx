@@ -1,211 +1,159 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Check } from 'lucide-react';
-import BackgroundFX from './BackgroundFX';
+import { Check, Copy, Github, Linkedin, Mail, MapPin, Phone, Send } from 'lucide-react';
+import Slide from './deck/Slide';
+import Reveal from './deck/Reveal';
+import Tilt from './deck/Tilt';
+import { PROFILE } from '../data/portfolio';
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+const Contact: React.FC = () => {
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [copied, setCopied] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      }, 3000);
-    }, 1000);
-  };
-
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: 'Email',
-      details: 'elhamdawimarwane@gmail.com',
-      href: 'mailto:elhamdawimarwane@gmail.com'
-    },
-    {
-      icon: Phone,
-      title: 'Téléphone',
-      details: '+212 7 77 07 97 74',
-      href: 'tel:+212777079774'
-    },
-    {
-      icon: MapPin,
-      title: 'Localisation',
-      details: 'Maroc',
-      href: '#'
+  const copy = async (text: string, key: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(key);
+      setTimeout(() => setCopied(null), 1800);
+    } catch {
+      /* clipboard unavailable */
     }
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  // Opens the visitor's mail client with everything pre-filled: nothing is lost or faked.
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const body = `${form.message}\n\n— ${form.name} (${form.email})`;
+    window.location.href = `mailto:${PROFILE.email}?subject=${encodeURIComponent(form.subject || `Contact portfolio — ${form.name}`)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const field =
+    'w-full rounded-xl border border-line bg-[rgba(10,13,11,0.7)] px-4 py-3 text-sm text-ink placeholder:text-[#5f6b62] outline-none transition-colors focus:border-[#dfff5b]';
+
+  const channels = [
+    { key: 'mail', icon: Mail, label: 'E-mail', value: PROFILE.email, href: `mailto:${PROFILE.email}`, copy: PROFILE.email },
+    { key: 'tel', icon: Phone, label: 'Téléphone', value: PROFILE.phone, href: PROFILE.phoneHref, copy: PROFILE.phone },
+    { key: 'loc', icon: MapPin, label: 'Basé à', value: `${PROFILE.location} · ouvert à Rabat` },
   ];
 
   return (
-    <section id="contact" className="py-20 relative overflow-hidden bg-black">
-      {/* overlay + halos supprimés, fond extraordinaire unifié */}
-      <BackgroundFX />
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold">
-            <span className="bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
-              Contactez-moi
-            </span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-teal-500 mx-auto rounded-full"></div>
-        </div>
-
-        <div className="grid lg:grid-cols-5 gap-12">
-          {/* Contact Info */}
-          <div className="lg:col-span-2 space-y-8">
-            <div>
-              <h3 className="text-2xl font-bold text-white mb-6">
-                Restons en contact
-              </h3>
-              <p className="text-gray-300 leading-relaxed mb-8">
-                Je suis toujours intéressé par de nouveaux défis et opportunités.
-                Que ce soit pour un projet freelance, une collaboration ou simplement
-                pour échanger sur le développement web, contactez-moi !
+    <Slide
+      index={5}
+      kicker="Contact & opportunités"
+      title={
+        <>
+          Construisons <span className="text-shine">la suite</span> ensemble.
+        </>
+      }
+    >
+      <div className="grid gap-6 lg:grid-cols-12">
+        <Reveal effect="left" className="lg:col-span-5">
+          <Tilt max={6} className="h-full rounded-3xl">
+            <div className="flex h-full flex-col gap-4 rounded-3xl border border-line bg-surface p-6 sm:p-7">
+              <p className="text-[15px] leading-relaxed text-muted">
+                Je recherche un <strong className="text-ink">poste de développeur ou de concepteur développeur</strong> à
+                Casablanca ou Rabat. Réponse rapide par e-mail ou téléphone.
               </p>
-            </div>
-
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => (
+              <ul className="space-y-3">
+                {channels.map(({ key, icon: Icon, label, value, href, copy: c }) => (
+                  <li key={key} className="flex items-center gap-3 rounded-2xl border border-line bg-[rgba(10,13,11,0.6)] p-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-lime">
+                      <Icon size={18} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-xs text-muted">{label}</span>
+                      {href ? (
+                        <a href={href} className="block truncate text-sm font-semibold text-ink hover:text-lime">
+                          {value}
+                        </a>
+                      ) : (
+                        <span className="block text-sm font-semibold text-ink">{value}</span>
+                      )}
+                    </span>
+                    {c && (
+                      <button
+                        onClick={() => copy(c, key)}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-lime"
+                        aria-label={`Copier ${label}`}
+                      >
+                        {copied === key ? <Check size={16} className="text-lime" /> : <Copy size={16} />}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto flex gap-3 pt-2">
                 <a
-                  key={index}
-                  href={info.href}
-                  className="flex items-center gap-4 p-4 bg-gray-800/40 backdrop-blur-sm rounded-xl border border-gray-700/50 hover:border-teal-400/30 transition-all duration-300 transform hover:scale-105 group"
+                  href={PROFILE.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-line py-3 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <info.icon size={20} className="text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-semibold">{info.title}</h4>
-                    <p className="text-gray-400">{info.details}</p>
-                  </div>
+                  <Github size={16} /> GitHub
                 </a>
-              ))}
-            </div>
-
-            {/* Availability */}
-            <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl border border-green-500/20">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-green-400 font-semibold">Disponible pour de nouveaux projets</span>
+                <a
+                  href={PROFILE.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-line py-3 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]"
+                >
+                  <Linkedin size={16} /> LinkedIn
+                </a>
               </div>
-              <p className="text-gray-300 text-sm">
-                Temps de réponse moyen : 24h
-              </p>
             </div>
-          </div>
+          </Tilt>
+        </Reveal>
 
-          {/* Contact Form */}
-          <div className="lg:col-span-3">
-            <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-8">
-              {!isSubmitted ? (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="block text-gray-300 text-sm font-medium mb-2">
-                        Nom complet *
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                        placeholder="Votre nom"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="email" className="block text-gray-300 text-sm font-medium mb-2">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                        placeholder="votre.email@exemple.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="subject" className="block text-gray-300 text-sm font-medium mb-2">
-                      Sujet *
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                      placeholder="De quoi souhaitez-vous parler ?"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-gray-300 text-sm font-medium mb-2">
-                      Message *
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 resize-none"
-                      placeholder="Décrivez votre projet, vos besoins ou toute question que vous pourriez avoir..."
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-4 bg-gradient-to-r from-cyan-400 to-teal-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-400/25 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    <Send size={18} />
-                    Envoyer le message
-                  </button>
-                </form>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Check size={32} className="text-green-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    Message envoyé !
-                  </h3>
-                  <p className="text-gray-300">
-                    Merci pour votre message. Je vous répondrai dans les plus brefs délais.
-                  </p>
-                </div>
-              )}
+        <Reveal effect="right" delay={150} className="lg:col-span-7">
+          <form onSubmit={onSubmit} className="grid h-full gap-4 rounded-3xl border border-line bg-[rgba(10,13,11,0.6)] p-6 sm:grid-cols-2 sm:p-7">
+            <label className="grid gap-1.5 text-xs text-muted">
+              Nom
+              <input name="name" required value={form.name} onChange={onChange} className={field} placeholder="Votre nom" autoComplete="name" />
+            </label>
+            <label className="grid gap-1.5 text-xs text-muted">
+              E-mail
+              <input
+                name="email"
+                type="email"
+                required
+                value={form.email}
+                onChange={onChange}
+                className={field}
+                placeholder="vous@entreprise.com"
+                autoComplete="email"
+              />
+            </label>
+            <label className="grid gap-1.5 text-xs text-muted sm:col-span-2">
+              Sujet
+              <input name="subject" value={form.subject} onChange={onChange} className={field} placeholder="Opportunité, projet, question…" />
+            </label>
+            <label className="grid gap-1.5 text-xs text-muted sm:col-span-2">
+              Message
+              <textarea
+                name="message"
+                required
+                rows={5}
+                value={form.message}
+                onChange={onChange}
+                className={`${field} resize-none`}
+                placeholder="Décrivez votre besoin…"
+              />
+            </label>
+            <div className="flex flex-wrap items-center justify-between gap-3 sm:col-span-2">
+              <span className="text-xs text-muted">Ouvre votre messagerie avec le message pré-rempli.</span>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0a0d0b] shadow-[0_0_30px_rgba(223,255,91,0.3)] transition-transform hover:-translate-y-0.5"
+              >
+                <Send size={16} /> Envoyer
+              </button>
             </div>
-          </div>
-        </div>
+          </form>
+        </Reveal>
       </div>
-    </section>
+    </Slide>
   );
 };
 

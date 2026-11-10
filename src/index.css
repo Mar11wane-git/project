@@ -2,11 +2,531 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+/* ───────────── Tokens ───────────── */
+:root {
+  --bg: #0a0d0b;
+  --surface: #121713;
+  --surface-2: #182019;
+  --line: rgba(255, 255, 255, 0.09);
+  --ink: #f1f5ee;
+  --muted: #93a196;
+  --lime: #dfff5b;
+  --emerald: #34d399;
+  --cyan: #22d3ee;
+  --violet: #a78bfa;
+  --amber: #fbbf24;
 
-    html,
-    body,
-    #root {
-        @apply bg-black text-white;
-    }
+  /* slide 3D intensity */
+  --slide-rx: 18deg;
+  --slide-tz: -260px;
+  --slide-ty: 8vh;
+
+  /* coverflow geometry */
+  --cf-w: 250px;
+  --cf-h: 340px;
+  --cf-gap: 150px;
+
+  /* hero orbit */
+  --orbit-r: 150px;
+
+  color-scheme: dark;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --cf-w: 290px;
+    --cf-h: 360px;
+    --cf-gap: 210px;
+    --orbit-r: 190px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --cf-w: 320px;
+    --cf-h: 380px;
+    --cf-gap: 270px;
+    --orbit-r: 215px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --slide-rx: 9deg;
+    --slide-tz: -120px;
+    --slide-ty: 4vh;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  html,
+  body,
+  #root {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: rgba(223, 255, 91, 0.3);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--lime), var(--emerald));
+    border-radius: 4px;
+  }
+}
+
+.font-display {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
+
+/* ───────────── Background stage ───────────── */
+.stage-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 15% 10%, rgba(223, 255, 91, 0.09), transparent 60%),
+    radial-gradient(50% 45% at 90% 30%, rgba(34, 211, 238, 0.08), transparent 60%),
+    radial-gradient(70% 60% at 50% 110%, rgba(52, 211, 153, 0.1), transparent 60%),
+    var(--bg);
+}
+.stage-grid {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -5%;
+  height: 65%;
+  transform: perspective(520px) rotateX(72deg);
+  transform-origin: 50% 100%;
+  background-image:
+    linear-gradient(rgba(223, 255, 91, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(223, 255, 91, 0.13) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: grid-move 3.5s linear infinite;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+}
+@keyframes grid-move {
+  to {
+    background-position: 0 64px;
+  }
+}
+.stage-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.stage-orb.a {
+  width: 38vmax;
+  height: 38vmax;
+  left: -12vmax;
+  top: -10vmax;
+  background: radial-gradient(circle, rgba(223, 255, 91, 0.22), transparent 65%);
+  transform: translate3d(0, calc(var(--scroll, 0) * 40vh), 0);
+}
+.stage-orb.b {
+  width: 34vmax;
+  height: 34vmax;
+  right: -14vmax;
+  top: 30vh;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.18), transparent 65%);
+  transform: translate3d(0, calc(var(--scroll, 0) * -50vh), 0);
+}
+.stage-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ───────────── Slides ───────────── */
+.slide {
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+}
+.slide-stage {
+  transform-origin: 50% 50%;
+  transform: translate3d(0, calc(var(--p, 0) * var(--slide-ty)), calc(var(--ap, 0) * var(--slide-tz)))
+    rotateX(calc(var(--p, 0) * var(--slide-rx)))
+    scale(calc(1 - var(--ap, 0) * 0.06));
+  opacity: calc(1 - var(--ap, 0) * 0.65);
+  will-change: transform, opacity;
+}
+.slide-frame {
+  background: linear-gradient(180deg, rgba(23, 30, 25, 0.88), rgba(13, 17, 14, 0.92));
+  border: 1px solid var(--line);
+  box-shadow:
+    0 50px 120px -40px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(223, 255, 91, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.frame-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--lime);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ───────────── Builds (reveal) ───────────── */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-rise {
+  transform: translate3d(0, 36px, 0);
+}
+.reveal-flip {
+  transform: perspective(900px) rotateX(-50deg) translate3d(0, 24px, 0);
+  transform-origin: 50% 0%;
+}
+.reveal-left {
+  transform: perspective(900px) rotateY(22deg) translate3d(-40px, 0, 0);
+  transform-origin: 0% 50%;
+}
+.reveal-right {
+  transform: perspective(900px) rotateY(-22deg) translate3d(40px, 0, 0);
+  transform-origin: 100% 50%;
+}
+.reveal-zoom {
+  transform: perspective(900px) translate3d(0, 0, -160px);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero name: per-letter 3D flip */
+.char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  animation: char-in 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i) * 45ms + 250ms);
+}
+@keyframes char-in {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateX(-95deg) translateY(30%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.text-shine {
+  background: linear-gradient(100deg, var(--lime) 0%, var(--emerald) 40%, var(--cyan) 70%, var(--lime) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 6s linear infinite;
+}
+@keyframes shine {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ───────────── Tilt ───────────── */
+.tilt {
+  position: relative;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.tilt[data-active] {
+  transition: transform 0.08s linear;
+}
+.tilt-glare {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.13), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tilt[data-active] .tilt-glare {
+  opacity: 1;
+}
+
+/* ───────────── Hero orbit ───────────── */
+.orbit-scene {
+  perspective: 1100px;
+}
+.orbit-tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-12deg) rotateZ(-4deg);
+}
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: orbit-spin 30s linear infinite;
+}
+.orbit-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+  animation: orbit-face 30s linear infinite;
+}
+@keyframes orbit-spin {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes orbit-face {
+  from {
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(var(--orbit-r)) rotateY(calc(var(--a) * -1));
+  }
+  to {
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(var(--orbit-r)) rotateY(calc(var(--a) * -1 - 360deg));
+  }
+}
+.orbit-path {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--orbit-r) * 2);
+  height: calc(var(--orbit-r) * 2);
+  margin: calc(var(--orbit-r) * -1) 0 0 calc(var(--orbit-r) * -1);
+  border-radius: 9999px;
+  border: 1px dashed rgba(223, 255, 91, 0.22);
+  transform: rotateX(90deg);
+}
+.float-y {
+  animation: float-y 6s ease-in-out infinite;
+}
+@keyframes float-y {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ───────────── Coverflow ───────────── */
+.cf {
+  position: relative;
+  height: var(--cf-h);
+  perspective: 1300px;
+  touch-action: pan-y;
+  user-select: none;
+}
+.cf-track {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.cf-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--cf-w);
+  height: 100%;
+  margin-left: calc(var(--cf-w) / -2);
+  transform: translateX(calc(var(--o) * var(--cf-gap))) translateZ(calc(var(--ao) * -170px)) rotateY(calc(var(--o) * -34deg));
+  transition:
+    transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.5s,
+    filter 0.5s;
+  filter: brightness(calc(1 - var(--ao) * 0.35));
+}
+.cf-card[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+.cf-reflection {
+  -webkit-box-reflect: below 10px linear-gradient(transparent 70%, rgba(0, 0, 0, 0.25));
+}
+
+/* Project details panel switch */
+.swap-in {
+  animation: swap-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateX(-18deg) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ───────────── Flip cards ───────────── */
+.flip {
+  perspective: 1200px;
+}
+.flip-inner {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.flip[data-flipped='true'] .flip-inner {
+  transform: rotateY(180deg);
+}
+@media (hover: hover) {
+  .flip:hover .flip-inner {
+    transform: rotateY(180deg);
+  }
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+.bar-fill {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+}
+.flip[data-flipped='true'] .bar-fill {
+  transform: scaleX(var(--v));
+}
+@media (hover: hover) {
+  .flip:hover .bar-fill {
+    transform: scaleX(var(--v));
+  }
+}
+
+/* ───────────── Deck chrome ───────────── */
+.deck-progress {
+  transform: scaleX(var(--scroll, 0));
+  transform-origin: 0 50%;
+}
+.cube {
+  transform-style: preserve-3d;
+  animation: cube-spin 12s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.cube > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(223, 255, 91, 0.6);
+  background: rgba(223, 255, 91, 0.08);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--lime);
+}
+@keyframes cube-spin {
+  0%,
+  15% {
+    transform: rotateX(-20deg) rotateY(0deg);
+  }
+  25%,
+  40% {
+    transform: rotateX(-20deg) rotateY(-90deg);
+  }
+  50%,
+  65% {
+    transform: rotateX(-20deg) rotateY(-180deg);
+  }
+  75%,
+  90% {
+    transform: rotateX(-20deg) rotateY(-270deg);
+  }
+  100% {
+    transform: rotateX(-20deg) rotateY(-360deg);
+  }
+}
+.marquee {
+  animation: marquee 30s linear infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 1.8s ease-in-out infinite;
+}
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+.modal-in {
+  animation: modal-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(12deg) translateY(30px) scale(0.96);
+  }
+}
+
+/* ───────────── Reduced motion ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .slide-stage {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .char,
+  .orbit-ring,
+  .orbit-item,
+  .stage-grid,
+  .cube,
+  .marquee,
+  .text-shine,
+  .float-y,
+  .scroll-cue,
+  .swap-in,
+  .modal-in {
+    animation: none !important;
+  }
+  .orbit-item {
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(var(--orbit-r)) rotateY(calc(var(--a) * -1));
+  }
 }

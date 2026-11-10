@@ -1,315 +1,175 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Github, Linkedin, Mail, Eye } from 'lucide-react';
-import CVModal from './CVModal';
+import React from 'react';
+import { ArrowRight, Eye, Github, Linkedin, Mail, MapPin } from 'lucide-react';
+import Slide from './deck/Slide';
+import Reveal from './deck/Reveal';
+import Tilt from './deck/Tilt';
+import { PROFILE, PROJECTS } from '../data/portfolio';
 
-const dynamicDescriptions = [
-  "Développeur Full Stack passionné, je transforme vos idées en solutions web modernes et performantes avec Laravel, React et Node.js.",
-  "Créateur d'expériences numériques exceptionnelles, maîtrisant les technologies frontend et backend les plus récentes.",
-  "Développeur polyvalent capable de gérer des projets complets, de la conception à la mise en production."
-];
+interface HeroProps {
+  onOpenCV: () => void;
+  goTo: (i: number) => void;
+}
 
-// Supprime le mock CVModal et utilise le vrai composant importé
+const ORBIT = ['React', 'Laravel', 'Spring Boot', 'FastAPI', 'SQL', 'Docker', 'Python', 'Zabbix'];
 
-const Hero = () => {
-  const [currentDescription, setCurrentDescription] = useState(0);
-  const [isCVModalOpen, setIsCVModalOpen] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+const SplitWord: React.FC<{ text: string }> = ({ text }) => (
+  <span className="inline-block whitespace-nowrap" aria-hidden>
+    {[...text].map((c, i) => (
+      <span key={i} className="char" style={{ ['--i' as string]: i }}>
+        {c === ' ' ? ' ' : c}
+      </span>
+    ))}
+  </span>
+);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentDescription((prev) => (prev + 1) % dynamicDescriptions.length);
-    }, 2500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const scrollToAbout = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const openCVModal = () => {
-    setIsCVModalOpen(true);
-  };
-
-  const closeCVModal = () => {
-    setIsCVModalOpen(false);
-  };
-
-  // Animation de fond constellation améliorée
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    let raf = 0;
-    let width = 0;
-    let height = 0;
-    const mouse = { x: -9999, y: -9999 };
-
-    let particles: Array<{ x: number; y: number; vx: number; vy: number; r: number; seed: number }> = [];
-
-    const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width * DPR;
-      canvas.height = height * DPR;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-
-      const count = Math.max(70, Math.min(200, Math.floor((width * height) / 20000)));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        r: Math.random() * 1.8 + 0.6,
-        seed: Math.random() * Math.PI * 2,
-      }));
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-    };
-
-    const step = (t: number) => {
-      ctx.clearRect(0, 0, width, height);
-
-      // Particules avec couleurs cohérentes
-      for (const p of particles) {
-        // Attraction légère vers la souris
-        const dxm = mouse.x - p.x;
-        const dym = mouse.y - p.y;
-        const dm = Math.hypot(dxm, dym);
-        if (dm < 180) {
-          p.vx += (dxm / dm) * 0.005;
-          p.vy += (dym / dm) * 0.005;
-        }
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -50) p.x = width + 50;
-        if (p.x > width + 50) p.x = -50;
-        if (p.y < -50) p.y = height + 50;
-        if (p.y > height + 50) p.y = -50;
-
-        // Scintillement avec couleur teal/cyan
-        const twinkle = 0.5 + 0.5 * Math.sin(t / 600 + p.seed);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-
-        // Couleur variable entre cyan et teal
-        const colorMix = Math.sin(t / 800 + p.seed * 2) * 0.5 + 0.5;
-        const r = Math.floor(34 + colorMix * 186); // De cyan-500 à teal-400
-        const g = Math.floor(211 - colorMix * 27); // Interpolation
-        const b = Math.floor(238 - colorMix * 72);
-
-        ctx.fillStyle = `rgba(${r},${g},${b},${0.4 + twinkle * 0.4})`;
-        ctx.fill();
-      }
-
-      // Lignes entre particules proches
-      const maxDist = 120;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const a = particles[i], b = particles[j];
-          const dx = a.x - b.x, dy = a.y - b.y;
-          const d = Math.hypot(dx, dy);
-          if (d < maxDist) {
-            ctx.strokeStyle = `rgba(34,211,238,${(1 - d / maxDist) * 0.3})`; // cyan-400
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Lignes interactives vers la souris
-      for (const p of particles) {
-        const dx = p.x - mouse.x, dy = p.y - mouse.y;
-        const d = Math.hypot(dx, dy);
-        if (d < 160) {
-          ctx.strokeStyle = `rgba(20,184,166,${(1 - d / 160) * 0.5})`; // teal-500
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
-        }
-      }
-
-      raf = requestAnimationFrame(step);
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', onMouseMove);
-    raf = requestAnimationFrame(step);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMouseMove);
-    };
-  }, []);
-
+const Hero: React.FC<HeroProps> = ({ onOpenCV, goTo }) => {
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      {/* Canvas constellation */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-60 pointer-events-none"
-        aria-hidden="true"
-      />
-
-      {/* Quadrillage tech subtil avec couleur cohérente */}
-      <div
-        className="absolute inset-0 opacity-8 pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(20,184,166,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.1) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Halos de couleur cohérents */}
-      <div
-        className="pointer-events-none absolute -top-24 -left-24 w-[28rem] h-[28rem] rounded-full blur-3xl opacity-30"
-        style={{ background: 'radial-gradient(circle at 30% 30%, rgba(34,211,238,0.4), rgba(0,0,0,0) 70%)' }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-32 -right-24 w-[36rem] h-[36rem] rounded-full blur-3xl opacity-25"
-        style={{ background: 'radial-gradient(circle at 70% 70%, rgba(20,184,166,0.35), rgba(0,0,0,0) 70%)' }}
-      />
-
-      {/* Contenu principal avec photo sur le côté droit */}
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-          {/* Contenu texte centré */}
-          <div className="lg:col-span-2 text-center">
-            <div className="mb-8 relative flex justify-center">
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full opacity-20 animate-spin slow-spin"></div>
-              <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full opacity-15 animate-pulse"></div>
+    <Slide
+      index={0}
+      frame={false}
+      extra={
+        <button
+          onClick={() => goTo(1)}
+          className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted transition-colors hover:text-ink md:flex"
+        >
+          Défiler · Page ↓
+          <span className="flex h-8 w-5 justify-center rounded-full border border-line pt-1.5">
+            <span className="scroll-cue block h-1.5 w-1 rounded-full bg-lime" />
+          </span>
+        </button>
+      }
+    >
+      <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
+        {/* Copy */}
+        <div className="lg:col-span-7">
+          <Reveal effect="flip">
+            <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
+              </span>
+              <span className="font-mono text-[11px] text-ink sm:text-xs">{PROFILE.current}</span>
             </div>
+          </Reveal>
 
-            {/* Contenu principal */}
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-                <span className="text-white drop-shadow-lg">Salut,</span><br />
-                <span className="text-white drop-shadow-lg">Je suis </span>
-                <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 bg-clip-text text-transparent animate-pulse">
-                  Marouane El hamdaoui
-                </span>
-              </h1>
+          <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-muted">
+            <span className="text-lime">01</span> — Bonjour, je suis
+          </p>
+          <h1 className="font-display text-[clamp(2.6rem,9vw,5.6rem)] font-bold leading-[0.95] tracking-tight text-ink">
+            <span className="sr-only">
+              {PROFILE.firstName} {PROFILE.lastName}
+            </span>
+            <SplitWord text={PROFILE.firstName.toUpperCase()} />
+            <br />
+            {/* gradient text can't paint through per-letter transforms, so the last name flips in as one block */}
+            <span className="char" style={{ ['--i' as string]: 9 }} aria-hidden>
+              <span className="text-shine whitespace-nowrap">{PROFILE.lastName.toUpperCase()}</span>
+            </span>
+          </h1>
 
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 drop-shadow-md">
-                Développeur Full Stack
-              </h2>
+          <Reveal delay={600}>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+              <strong className="text-ink">{PROFILE.headline}</strong> · élève-ingénieur en Génie Informatique. Je conçois des applications web complètes — de l'agent IA{' '}
+              <strong className="text-ink">Vasco</strong> à la plateforme e-learning{' '}
+              <strong className="text-ink">MR1Academy</strong> — avec la rigueur de la production monétique chez{' '}
+              <strong className="text-lime">HPS</strong>.
+            </p>
+          </Reveal>
 
-              <div className="mb-8 max-w-3xl mx-auto">
-                <p className="text-lg md:text-xl text-gray-200 leading-relaxed">
-                  <span className="text-teal-400 font-bold mr-2 text-2xl">{'>'}</span>
-                  <span className="text-gray-100">{dynamicDescriptions[currentDescription]}</span>
-                </p>
-              </div>
-
-              {/* Boutons d'action centrés */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                <button
-                  onClick={scrollToContact}
-                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full text-white font-semibold bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 shadow-[0_8px_30px_-12px_rgba(20,184,166,0.7)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.8)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transform hover:scale-105"
-                >
-                  <Mail size={18} className="group-hover:rotate-12 transition-transform duration-300" />
-                  Me Contacter
-                </button>
-                <button
-                  onClick={openCVModal}
-                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-white bg-gray-800/80 backdrop-blur-sm border border-teal-500/30 hover:bg-gray-700/80 hover:border-teal-400/50 shadow-[0_8px_30px_-12px_rgba(17,17,17,0.7)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.4)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-teal-400/40 transform hover:scale-105"
-                >
-                  <Eye size={18} className="group-hover:scale-110 transition-transform duration-300" />
-                  Voir CV
-                </button>
-              </div>
-
-              {/* Liens sociaux centrés */}
-              <div className="flex justify-center space-x-6 mb-16">
+          <Reveal delay={750}>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => goTo(3)}
+                className="group inline-flex items-center gap-2 rounded-xl bg-lime px-6 py-3.5 text-sm font-bold text-[#0a0d0b] shadow-[0_0_30px_rgba(223,255,91,0.35)] transition-transform hover:-translate-y-0.5"
+              >
+                Voir les projets
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              </button>
+              <button
+                onClick={onOpenCV}
+                className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-[#dfff5b]"
+              >
+                <Eye size={16} className="text-lime" />
+                Mon CV
+              </button>
+              <div className="flex items-center gap-2">
                 {[
-                  { icon: Github, href: 'https://github.com/Mar11wane-git', label: 'GitHub' },
-                  { icon: Linkedin, href: 'https://www.linkedin.com/in/Marouane-El-Hamdaoui/', label: 'LinkedIn' },
-                  { icon: Mail, href: 'mailto:marouane.elhamdaoui@gmail.com', label: 'Email' }
-                ].map(({ icon: Icon, href, label }) => (
+                  { href: PROFILE.github, icon: Github, label: 'GitHub' },
+                  { href: PROFILE.linkedin, icon: Linkedin, label: 'LinkedIn' },
+                  { href: `mailto:${PROFILE.email}`, icon: Mail, label: 'E-mail' },
+                ].map(({ href, icon: Icon, label }) => (
                   <a
                     key={label}
                     href={href}
-                    target="_blank"
+                    target={href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
-                    className="group p-4 bg-gray-800/60 backdrop-blur-sm rounded-full border border-teal-500/20 hover:border-teal-400/40 hover:bg-teal-500/10 transition-all duration-300 transform hover:scale-110 shadow-[0_8px_30px_-12px_rgba(20,184,166,0.3)] hover:shadow-[0_12px_40px_-12px_rgba(20,184,166,0.5)]"
                     aria-label={label}
+                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-line text-muted transition-colors hover:border-[#dfff5b] hover:text-lime"
                   >
-                    <Icon size={24} className="text-gray-300 group-hover:text-cyan-400 transition-colors duration-300" />
+                    <Icon size={18} />
                   </a>
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          {/* Photo centrée avec statut */}
-          <div className="lg:col-span-1 flex flex-col items-center">
-            <div className="relative group mb-4">
-              {/* Anneau autour de la photo */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <img
-                src="/pecture pro.png"
-                alt="Photo professionnelle"
-                className="relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full object-cover border-4 border-gray-800/50 shadow-2xl shadow-cyan-400/20 hover:shadow-teal-400/30 transition-all duration-300 transform group-hover:scale-105"
-              />
-              {/* Anneau intérieur */}
-              <div className="absolute inset-0 rounded-full border-2 border-cyan-400/50 animate-pulse"></div>
-            </div>
-
-            {/* Phrase de disponibilité */}
-            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 text-green-400 text-sm font-medium animate-pulse">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              Disponible pour travail
-            </div>
-          </div>
+          <Reveal delay={900}>
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
+              {[
+                { k: `${PROJECTS.length}`, v: 'Projets livrés' },
+                { k: 'Bac+5', v: 'Génie Info' },
+                { k: '24/7', v: 'Prod. monétique' },
+              ].map((s) => (
+                <div key={s.v} className="rounded-2xl border border-line bg-[rgba(18,23,19,0.7)] p-3 sm:p-4">
+                  <dt className="sr-only">{s.v}</dt>
+                  <dd className="font-display text-xl font-bold text-ink sm:text-2xl">{s.k}</dd>
+                  <dd className="mt-0.5 text-[11px] text-muted sm:text-xs">{s.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
         </div>
 
-        {/* Indicateur de scroll */}
-        <button
-          onClick={scrollToAbout}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce p-2 rounded-full bg-teal-500/20 border border-teal-400/30 hover:bg-teal-500/30 transition-all duration-300"
-          aria-label="Défiler vers la section À propos"
-        >
-          <ChevronDown size={32} className="text-cyan-400" />
-        </button>
+        {/* 3D scene */}
+        <div className="lg:col-span-5">
+          <Reveal effect="zoom" delay={300}>
+            <div className="orbit-scene relative mx-auto aspect-square w-full max-w-[min(440px,88vw)]">
+              <div className="orbit-tilt">
+                <span className="orbit-path" aria-hidden />
+                <div className="orbit-ring" aria-hidden>
+                  {ORBIT.map((label, i) => (
+                    <span key={label} className="orbit-item" style={{ ['--a' as string]: `${(360 / ORBIT.length) * i}deg` }}>
+                      <span className="block whitespace-nowrap rounded-full border border-[rgba(223,255,91,0.35)] bg-[rgba(18,23,19,0.92)] px-3 py-1.5 font-mono text-[10px] font-semibold text-lime shadow-[0_0_18px_rgba(223,255,91,0.15)] sm:text-xs">
+                        {label}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+
+                <div className="absolute left-1/2 top-1/2 w-[46%] -translate-x-1/2 -translate-y-1/2">
+                  <div className="float-y">
+                    <Tilt max={14} className="rounded-[26px]">
+                      <div className="relative overflow-hidden rounded-[26px] border border-[rgba(255,255,255,0.15)] bg-surface p-1.5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]">
+                        <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-[#dfff5b] via-[#34d399] to-[#22d3ee] opacity-40" aria-hidden />
+                        <img
+                          src={PROFILE.photo}
+                          alt={`${PROFILE.firstName} ${PROFILE.lastName}`}
+                          className="relative aspect-[4/5] w-full rounded-[20px] object-cover object-top"
+                          loading="eager"
+                        />
+                      </div>
+                    </Tilt>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+          <p className="mt-2 flex items-center justify-center gap-1.5 font-mono text-[11px] text-muted">
+            <MapPin size={12} className="text-lime" /> {PROFILE.location}
+          </p>
+        </div>
       </div>
-
-      {/* Modal du CV */}
-      <CVModal isOpen={isCVModalOpen} onClose={closeCVModal} />
-
-      <style jsx>{`
-        .slow-spin {
-          animation: spin 3s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-    </section>
+    </Slide>
   );
 };
 
