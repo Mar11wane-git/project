@@ -9,13 +9,11 @@ interface HeaderProps {
 }
 
 const Logo: React.FC = () => (
-  <span className="relative block h-7 w-7 [perspective:300px]" aria-hidden>
-    <span className="cube absolute inset-0">
-      <span style={{ transform: 'translateZ(14px)' }}>ME</span>
-      <span style={{ transform: 'rotateY(90deg) translateZ(14px)' }}>H</span>
-      <span style={{ transform: 'rotateY(180deg) translateZ(14px)' }}>MR1</span>
-      <span style={{ transform: 'rotateY(-90deg) translateZ(14px)' }}>{'</>'}</span>
-    </span>
+  <span
+    className="flex h-8 w-8 items-center justify-center rounded-md border border-[rgba(214,242,94,0.6)] bg-[rgba(214,242,94,0.08)] font-mono text-[11px] font-bold text-lime"
+    aria-hidden
+  >
+    ME
   </span>
 );
 
